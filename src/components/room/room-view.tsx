@@ -5,7 +5,10 @@ import { useCallback, useState } from "react";
 import { LeaveIcon, LinkIcon } from "@/components/icons";
 import { Button } from "@/components/ui";
 import type { RoomState } from "@/lib/room-types";
+import { playChime } from "@/lib/chime";
+import { TimerControls, TimerDisplay, TimerProgress } from "./timer-bar";
 import { useRoomState } from "./use-room-state";
+import { usePhaseChange, useTimer } from "./use-timer";
 import { VideoStage } from "./video-stage";
 
 type RoomEvent = { type: "room-updated" } | { type: "goals-updated" } | { type: "kicked"; userId: string };
@@ -16,8 +19,14 @@ export function RoomView(props: {
   onLeave: () => void;
   onKicked: () => void;
 }) {
-  const { state, refresh } = useRoomState(props.initial.room.id, props.initial);
+  const { state, refresh, serverNow } = useRoomState(props.initial.room.id, props.initial);
   const { room, me } = state;
+  const timer = useTimer(room, serverNow);
+
+  usePhaseChange(timer.phase, (next) => {
+    if (next !== "idle") playChime(next);
+    if (next !== "idle") document.title = `${next === "focus" ? "Focus" : "Break"} · ${room.name}`;
+  });
 
   // The server nudges us over LiveKit when something changes; we refetch the real state.
   useDataChannel(
@@ -48,15 +57,20 @@ export function RoomView(props: {
 
   return (
     <div className="flex h-dvh flex-col">
-      <header className="flex h-14 shrink-0 items-center justify-between gap-4 border-b border-border px-4">
+      <header className="grid h-14 shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-4 px-4">
         <h1 className="truncate font-semibold">{room.name}</h1>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          <TimerDisplay timer={timer} />
+          <TimerControls roomId={room.id} timer={timer} onChanged={refresh} />
+        </div>
+        <div className="flex items-center justify-end gap-2">
           <InviteButton roomId={room.id} />
           <Button variant="danger" size="sm" onClick={props.onLeave}>
             <LeaveIcon className="size-4" /> Leave
           </Button>
         </div>
       </header>
+      <TimerProgress timer={timer} />
 
       <main className="min-h-0 flex-1 p-3">
         <VideoStage goals={state.goals} canRemove={me.isHost} onRemove={removeParticipant} />
