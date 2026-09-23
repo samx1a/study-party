@@ -3,6 +3,7 @@
 export type RoomGoal = {
   id: string;
   userId: string;
+  userName: string;
   text: string;
   done: boolean;
 };

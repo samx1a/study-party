@@ -90,8 +90,9 @@ export async function listMyRooms(userId: string) {
 export async function getRoomState(r: Room, userId: string): Promise<RoomState> {
   const since = new Date(Date.now() - GOAL_WINDOW_HOURS * 3600_000);
   const goals = await db
-    .select({ id: goal.id, userId: goal.userId, text: goal.text, done: goal.done })
+    .select({ id: goal.id, userId: goal.userId, userName: user.name, text: goal.text, done: goal.done })
     .from(goal)
+    .innerJoin(user, eq(user.id, goal.userId))
     .where(and(eq(goal.roomId, r.id), gt(goal.createdAt, since)))
     .orderBy(asc(goal.createdAt));
 

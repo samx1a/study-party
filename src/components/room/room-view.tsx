@@ -6,6 +6,7 @@ import { LeaveIcon, LinkIcon } from "@/components/icons";
 import { Button } from "@/components/ui";
 import type { RoomState } from "@/lib/room-types";
 import { playChime } from "@/lib/chime";
+import { GoalsPanel } from "./goals-panel";
 import { ControlBar, PausedOverlay, useMyScreen } from "./controls";
 import { TimerControls, TimerDisplay, TimerProgress } from "./timer-bar";
 import { useRoomState } from "./use-room-state";
@@ -20,7 +21,7 @@ export function RoomView(props: {
   onLeave: () => void;
   onKicked: () => void;
 }) {
-  const { state, refresh, serverNow } = useRoomState(props.initial.room.id, props.initial);
+  const { state, setState, refresh, serverNow } = useRoomState(props.initial.room.id, props.initial);
   const { room, me } = state;
   const timer = useTimer(room, serverNow);
   const screen = useMyScreen();
@@ -75,10 +76,21 @@ export function RoomView(props: {
       </header>
       <TimerProgress timer={timer} />
 
-      <main className="relative min-h-0 flex-1 p-3">
-        <VideoStage goals={state.goals} canRemove={me.isHost} onRemove={removeParticipant} />
-        {screen.paused && <PausedOverlay onShare={screen.share} />}
-      </main>
+      <div className="flex min-h-0 flex-1">
+        <main className="relative min-w-0 flex-1 p-3">
+          <VideoStage goals={state.goals} canRemove={me.isHost} onRemove={removeParticipant} />
+          {screen.paused && <PausedOverlay onShare={screen.share} />}
+        </main>
+        {sidebarOpen && (
+          <GoalsPanel
+            roomId={room.id}
+            meId={me.id}
+            goals={state.goals}
+            onChange={(goals) => setState((s) => ({ ...s, goals }))}
+            refresh={refresh}
+          />
+        )}
+      </div>
 
       <ControlBar
         phase={timer.phase}

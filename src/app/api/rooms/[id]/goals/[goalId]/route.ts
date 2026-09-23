@@ -29,7 +29,7 @@ export const PATCH = handler(async (req, ctx: Ctx) => {
     .update(goal)
     .set({ done, completedAt: done ? new Date() : null })
     .where(where)
-    .returning({ id: goal.id, userId: goal.userId, text: goal.text, done: goal.done });
+    .returning({ id: goal.id });
   await broadcast(roomId, { type: "goals-updated" });
   return NextResponse.json(row);
 });

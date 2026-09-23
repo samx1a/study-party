@@ -26,7 +26,7 @@ export const POST = handler(async (req, ctx: RouteContext<"/api/rooms/[id]/goals
   const [row] = await db
     .insert(goal)
     .values({ id: nanoid(12), roomId: id, userId: me.id, text })
-    .returning({ id: goal.id, userId: goal.userId, text: goal.text, done: goal.done });
+    .returning({ id: goal.id });
   await broadcast(id, { type: "goals-updated" });
   return NextResponse.json(row, { status: 201 });
 });
