@@ -31,9 +31,7 @@ export default async function Home() {
 
       <main className="flex-1">
         <section className="mx-auto max-w-6xl px-4 pt-16 pb-20 text-center md:pt-24">
-          <p className="mx-auto w-fit rounded-full border border-border px-3 py-1 text-xs text-muted">
-            Free · No sign-up · No downloads
-          </p>
+          <p className="text-sm text-muted">Free · No sign-up · No downloads</p>
           <h1 className="mx-auto mt-6 max-w-3xl text-5xl font-bold leading-[1.05] tracking-tight md:text-6xl">
             Study together.
             <br />
@@ -73,7 +71,7 @@ export default async function Home() {
           <ol className="mt-12 grid gap-6 md:grid-cols-3">
             {STEPS.map((s, i) => (
               <li key={s.title} className="rounded-2xl border border-border bg-surface p-6">
-                <span className="font-mono text-sm text-accent-ink">0{i + 1}</span>
+                <span className="text-sm font-medium text-muted">Step {i + 1}</span>
                 <h3 className="mt-2 font-semibold">{s.title}</h3>
                 <p className="mt-2 text-sm text-muted">{s.body}</p>
               </li>
@@ -82,7 +80,7 @@ export default async function Home() {
         </section>
 
         <section className="mx-auto max-w-4xl px-4 pb-24">
-          <div className="rounded-3xl border border-border bg-surface p-8 md:p-12">
+          <div className="rounded-2xl border border-border bg-surface p-8 md:p-10">
             <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
               Built with your privacy in mind
             </h2>
@@ -155,15 +153,15 @@ function RoomMock() {
   return (
     <div
       aria-hidden
-      className="relative mx-auto mt-16 max-w-4xl overflow-hidden rounded-2xl border border-border bg-surface text-left shadow-2xl shadow-accent/20"
+      className="relative mx-auto mt-16 max-w-4xl overflow-hidden rounded-2xl border border-border bg-surface text-left shadow-[0_20px_60px_-30px_rgba(31,30,27,0.25)]"
     >
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <span className="text-sm font-semibold">CS 61B grind</span>
         <span className="flex items-center gap-2">
-          <span className="rounded-full bg-accent/60 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-accent-ink uppercase">
-            Focus · 2
+          <span className="rounded-full bg-accent px-2 py-0.5 text-[11px] font-medium text-accent-ink">
+            Focus · round 2
           </span>
-          <span className="font-mono text-lg font-semibold">18:42</span>
+          <span className="text-lg font-semibold tabular-nums">18:42</span>
         </span>
         <span className="text-xs text-muted">4 studying</span>
       </div>
@@ -178,7 +176,7 @@ function RoomMock() {
           >
             {p.kind === "paused" ? (
               <div className="flex size-full items-center justify-center text-xs text-warn">
-                ⏸ Paused, not sharing
+                ⏸ Paused, camera off
               </div>
             ) : (
               <div className={p.kind === "code" ? "space-y-2 p-4 font-mono" : "space-y-2 p-4"}>

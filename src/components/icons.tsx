@@ -75,3 +75,8 @@ export const CameraIcon = ({ className }: P) => (
     <rect x="1" y="5" width="15" height="14" rx="2" />
   </svg>
 );
+export const FlameIcon = ({ className }: P) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path d="M12 2c.5 3.2-1.4 5-3 6.8C7.4 10.6 6 12.4 6 15a6 6 0 0 0 12 0c0-2.4-1.1-4.2-2.3-5.6-.2 1.3-.9 2.4-2 2.9.6-3.6-.5-7.6-1.7-10.3z" />
+  </svg>
+);

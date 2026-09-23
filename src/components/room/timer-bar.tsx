@@ -12,17 +12,17 @@ export function TimerDisplay({ timer }: { timer: TimerState }) {
     <div className="flex items-center gap-3" data-testid="timer" data-phase={timer.phase}>
       <span
         className={cn(
-          "rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide",
-          timer.phase === "focus" && "bg-accent/60 text-accent-ink",
+          "rounded-full px-2.5 py-0.5 text-[13px] font-medium",
+          timer.phase === "focus" && "bg-accent text-accent-ink",
           timer.phase === "break" && "bg-break text-break-ink",
           timer.phase === "idle" && "bg-surface-2 text-muted",
         )}
       >
         {LABEL[timer.phase]}
-        {timer.phase !== "idle" && ` · ${timer.round}`}
+        {timer.phase !== "idle" && ` · round ${timer.round}`}
       </span>
       {timer.phase !== "idle" && (
-        <span className="font-mono text-2xl font-semibold tabular-nums" aria-live="off">
+        <span className="text-2xl font-semibold tracking-tight tabular-nums" aria-live="off">
           {formatClock(timer.remainingMs)}
         </span>
       )}

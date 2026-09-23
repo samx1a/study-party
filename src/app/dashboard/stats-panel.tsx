@@ -1,3 +1,4 @@
+import { FlameIcon } from "@/components/icons";
 import type { Stats } from "@/lib/stats";
 import { STREAK_MIN_MINUTES } from "@/lib/streak";
 
@@ -32,7 +33,9 @@ export function StatsPanel({ stats }: { stats: Stats }) {
   return (
     <div className="rounded-xl border border-border bg-surface p-4">
       <p className="text-lg">
-        <span className="font-semibold">🔥 {stats.streak}-day streak</span>
+        <span className="inline-flex items-center gap-1.5 font-semibold">
+          <FlameIcon className="size-4 text-accent-ink" /> {stats.streak}-day streak
+        </span>
         <span className="text-muted"> · best {stats.longestStreak}</span>
       </p>
       <dl className="mt-3 grid grid-cols-3 gap-4 text-sm">

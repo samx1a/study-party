@@ -6,16 +6,16 @@ type Variant = "primary" | "secondary" | "ghost" | "danger";
 type Size = "sm" | "md" | "lg";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-accent text-accent-ink hover:bg-accent-hover font-semibold",
-  secondary: "bg-surface-2 text-text border border-border hover:border-muted",
+  primary: "bg-primary text-bg hover:bg-primary-hover font-medium",
+  secondary: "bg-surface-2 text-text hover:bg-border font-medium",
   ghost: "text-muted hover:text-text hover:bg-surface-2",
-  danger: "bg-danger/15 text-danger border border-danger/30 hover:bg-danger/25",
+  danger: "text-danger hover:bg-danger/10 font-medium",
 };
 
 const sizes: Record<Size, string> = {
-  sm: "h-8 px-3 text-sm rounded-md gap-1.5",
-  md: "h-10 px-4 text-sm rounded-lg gap-2",
-  lg: "h-12 px-6 text-base rounded-xl gap-2",
+  sm: "h-8 px-3 text-[13px] rounded-lg gap-1.5",
+  md: "h-9 px-4 text-sm rounded-[10px] gap-2",
+  lg: "h-11 px-5 text-[15px] rounded-xl gap-2",
 };
 
 export function buttonClass(variant: Variant = "primary", size: Size = "md", className?: string) {
@@ -50,8 +50,8 @@ export function Input({ className, ...props }: ComponentProps<"input">) {
   return (
     <input
       className={cn(
-        "h-10 w-full rounded-lg border border-border bg-surface px-3 text-sm text-text",
-        "placeholder:text-muted/70 focus:border-accent-ink focus:outline-none",
+        "h-10 w-full rounded-[10px] border border-border bg-surface px-3 text-[15px] text-text",
+        "placeholder:text-muted/70 focus:border-accent-ink/50 focus:ring-4 focus:ring-accent focus:outline-none",
         className,
       )}
       {...props}
@@ -70,7 +70,7 @@ export function Card({ className, ...props }: ComponentProps<"div">) {
 export function Logo({ className }: { className?: string }) {
   return (
     <Link href="/" className={cn("flex items-center gap-2 font-semibold", className)}>
-      <span className="grid size-7 place-items-center rounded-lg bg-accent text-accent-ink">
+      <span className="grid size-7 place-items-center rounded-lg bg-primary text-bg">
         <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={2.5}>
           <circle cx="12" cy="13" r="8" />
           <path d="M12 9v4l2 2M9 2h6" strokeLinecap="round" />
@@ -84,7 +84,7 @@ export function Logo({ className }: { className?: string }) {
 export function ErrorText({ children }: { children?: React.ReactNode }) {
   if (!children) return null;
   return (
-    <p role="alert" className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">
+    <p role="alert" className="rounded-[10px] bg-danger/10 px-3 py-2 text-sm text-danger">
       {children}
     </p>
   );

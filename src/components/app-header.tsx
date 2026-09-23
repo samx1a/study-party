@@ -4,8 +4,8 @@ import { SignOutButton } from "@/components/sign-out-button";
 
 export function AppHeader({ name, guest = false }: { name: string; guest?: boolean }) {
   return (
-    <header className="border-b border-border">
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
+    <header className="sticky top-0 z-20 border-b border-border bg-bg/80 backdrop-blur-xl">
+      <div className="mx-auto flex h-12 max-w-3xl items-center justify-between px-4">
         <Logo />
         <nav className="flex items-center gap-1 text-sm">
           <Link

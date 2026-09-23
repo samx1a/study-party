@@ -1,21 +1,25 @@
 @import "tailwindcss";
 
-/* Soft pastel light theme: tinted backgrounds (not pure white), pastel fills,
-   and dark "ink" colors for any text that sits on or near a pastel. */
+/* Warm, quiet light theme. Inspired by Apple's system apps (SF font, grouped
+   lists, hairline separators) and Claude's warm off-white palette.
+   Rules: no pure white, no gradients, no glows. Pastels only as soft fills,
+   with a darker "ink" shade for any text that sits on them. */
 :root {
-  --bg: #f6f4fb; /* lavender-tinted page */
-  --surface: #fdfcff; /* cards, panels */
-  --surface-2: #eeebf7; /* hover, subtle fills */
-  --border: #e2ddf0;
-  --text: #221f33;
-  --muted: #6b6780;
-  --accent: #bcc5ff; /* periwinkle fill: buttons, focus */
-  --accent-hover: #a9b5ff;
-  --accent-ink: #29237d; /* text on/near accent */
-  --break: #b5ecd2; /* mint fill: break time */
-  --break-ink: #17704c;
-  --warn: #a15c07;
-  --danger: #c2334a;
+  --bg: #f7f5f0; /* warm off-white page */
+  --surface: #fdfcfa; /* grouped lists, cards */
+  --surface-2: #efece5; /* soft buttons, hover */
+  --border: #e5e0d5; /* hairlines */
+  --text: #1f1e1b;
+  --muted: #78736a;
+  --primary: #1f1e1b; /* main buttons: near-black */
+  --primary-hover: #3a3833;
+  --accent: #f3ddd2; /* pastel clay: focus time, highlights */
+  --accent-hover: #edd0c1;
+  --accent-ink: #a14e30;
+  --break: #dde9d8; /* pastel sage: break time */
+  --break-ink: #3d6b45;
+  --warn: #946312;
+  --danger: #c0392b;
   color-scheme: light;
 }
 
@@ -26,6 +30,8 @@
   --color-border: var(--border);
   --color-text: var(--text);
   --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
   --color-accent-ink: var(--accent-ink);
@@ -33,13 +39,15 @@
   --color-break-ink: var(--break-ink);
   --color-warn: var(--warn);
   --color-danger: var(--danger);
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
 }
 
 body {
   background: var(--bg);
   color: var(--text);
+  font-size: 15px;
+  letter-spacing: -0.005em;
 }
 
 ::selection {
@@ -47,6 +55,6 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent-ink);
-  outline-offset: 2px;
+  outline: 3px solid color-mix(in srgb, var(--accent-ink) 35%, transparent);
+  outline-offset: 1px;
 }
