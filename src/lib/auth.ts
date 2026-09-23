@@ -23,6 +23,9 @@ export const auth = betterAuth({
     maxPasswordLength: 128,
   },
   user: {
+    // Lets people delete their account (password required). Rooms, goals, and
+    // study history cascade-delete with the user row.
+    deleteUser: { enabled: true },
     additionalFields: {
       timezone: { type: "string", required: false, defaultValue: "UTC", input: true },
     },
