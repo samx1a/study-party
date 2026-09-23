@@ -2,11 +2,12 @@
 
 import { RoomAudioRenderer, useDataChannel } from "@livekit/components-react";
 import { useCallback, useState } from "react";
-import { LeaveIcon, LinkIcon } from "@/components/icons";
+import { GearIcon, LeaveIcon, LinkIcon } from "@/components/icons";
 import { Button } from "@/components/ui";
 import type { RoomState } from "@/lib/room-types";
 import { playChime } from "@/lib/chime";
 import { GoalsPanel } from "./goals-panel";
+import { SettingsDialog } from "./settings-dialog";
 import { ControlBar, PausedOverlay, useMyScreen } from "./controls";
 import { TimerControls, TimerDisplay, TimerProgress } from "./timer-bar";
 import { useRoomState } from "./use-room-state";
@@ -26,6 +27,7 @@ export function RoomView(props: {
   const timer = useTimer(room, serverNow);
   const screen = useMyScreen();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   usePhaseChange(timer.phase, (next) => {
     if (next !== "idle") playChime(next);
@@ -68,6 +70,11 @@ export function RoomView(props: {
           <TimerControls roomId={room.id} timer={timer} onChanged={refresh} />
         </div>
         <div className="flex items-center justify-end gap-2">
+          {me.isHost && (
+            <Button variant="ghost" size="sm" onClick={() => setSettingsOpen(true)} aria-label="Room settings">
+              <GearIcon className="size-4" />
+            </Button>
+          )}
           <InviteButton roomId={room.id} />
           <Button variant="danger" size="sm" onClick={props.onLeave}>
             <LeaveIcon className="size-4" /> Leave
@@ -99,6 +106,9 @@ export function RoomView(props: {
         onToggleSidebar={() => setSidebarOpen((o) => !o)}
       />
 
+      {me.isHost && (
+        <SettingsDialog room={room} open={settingsOpen} onClose={() => setSettingsOpen(false)} onSaved={refresh} />
+      )}
       <RoomAudioRenderer />
     </div>
   );
