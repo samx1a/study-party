@@ -10,6 +10,7 @@ import { GoalsPanel } from "./goals-panel";
 import { SettingsDialog } from "./settings-dialog";
 import { ControlBar, PausedOverlay, useMyScreen } from "./controls";
 import { TimerControls, TimerDisplay, TimerProgress } from "./timer-bar";
+import { useHeartbeat } from "./use-heartbeat";
 import { useRoomState } from "./use-room-state";
 import { usePhaseChange, useTimer } from "./use-timer";
 import { VideoStage } from "./video-stage";
@@ -26,6 +27,7 @@ export function RoomView(props: {
   const { room, me } = state;
   const timer = useTimer(room, serverNow);
   const screen = useMyScreen();
+  useHeartbeat(room.id);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [settingsOpen, setSettingsOpen] = useState(false);
 
