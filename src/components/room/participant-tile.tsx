@@ -44,9 +44,7 @@ export function ParticipantTile({
       data-testid="tile"
       data-name={name}
     >
-      <ScreenArea screen={screen} small={small} />
-
-      <CameraBubble camera={camera} name={name} small={small} mirror={participant.isLocal} />
+      <TileMedia participant={participant} screen={screen} camera={camera} name={name} small={small} />
 
       <div className="absolute bottom-2 left-2 flex max-w-[70%] items-center gap-1.5 rounded-md bg-black/60 px-2 py-1 text-xs text-white backdrop-blur">
         {micMuted ? (
@@ -80,46 +78,43 @@ export function ParticipantTile({
   );
 }
 
-function ScreenArea({ screen, small }: { screen?: TrackReference; small: boolean }) {
-  // Hooks can't be conditional, so muted-ness is read inside a child that only renders with a track.
-  if (!screen) {
-    return (
-      <Placeholder small={small} tone="warn" icon={<PauseIcon className="size-5" />}>
-        Paused, not sharing
-      </Placeholder>
-    );
-  }
-  return <LiveScreen screen={screen} small={small} />;
-}
-
-function LiveScreen({ screen, small }: { screen: TrackReference; small: boolean }) {
-  const hidden = useIsMuted(screen);
-  if (hidden) {
-    return (
-      <Placeholder small={small} tone="muted" icon={<EyeOffIcon className="size-5" />}>
-        Screen hidden for a moment
-      </Placeholder>
-    );
-  }
-  return <VideoTrack trackRef={screen} className="size-full bg-black object-contain" />;
-}
-
-function Placeholder(props: {
+// Main area: your shared screen (with your camera in a bubble) if you're sharing,
+// otherwise your camera fills the tile. Camera off = paused.
+function TileMedia(props: {
+  participant: Participant;
+  screen?: TrackReference;
+  camera?: TrackReference;
+  name: string;
   small: boolean;
-  tone: "warn" | "muted";
-  icon: React.ReactNode;
-  children: React.ReactNode;
 }) {
+  const { participant, screen, camera, name, small } = props;
+  const cameraOff = useIsMuted({ participant, source: Track.Source.Camera }) || !camera;
+  const screenHidden = useIsMuted({ participant, source: Track.Source.ScreenShare });
+  const screenLive = !!screen && !screenHidden;
+  const mirror = participant.isLocal;
+
   return (
-    <div
-      className={cn(
-        "flex size-full flex-col items-center justify-center gap-2 bg-surface-2",
-        props.tone === "warn" ? "text-warn" : "text-muted",
+    <>
+      {screenLive ? (
+        <VideoTrack trackRef={screen} className="size-full bg-black object-contain" />
+      ) : !cameraOff && camera ? (
+        <VideoTrack trackRef={camera} className={cn("size-full object-cover", mirror && "-scale-x-100")} />
+      ) : (
+        <Placeholder small={small} tone="warn" icon={<PauseIcon className="size-5" />}>
+          Paused, camera off
+        </Placeholder>
       )}
-    >
-      {props.icon}
-      {!props.small && <span className="text-sm">{props.children}</span>}
-    </div>
+
+      {screenLive && (
+        <CameraBubble camera={cameraOff ? undefined : camera} name={name} small={small} mirror={mirror} />
+      )}
+
+      {!small && screen && screenHidden && (
+        <span className="absolute top-2 left-2 flex items-center gap-1 rounded-md bg-black/60 px-2 py-1 text-xs text-white">
+          <EyeOffIcon className="size-3.5" /> Screen hidden
+        </span>
+      )}
+    </>
   );
 }
 
@@ -166,4 +161,23 @@ function initials(name: string) {
     .slice(0, 2)
     .map((w) => w[0]?.toUpperCase())
     .join("");
+}
+
+function Placeholder(props: {
+  small: boolean;
+  tone: "warn" | "muted";
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className={cn(
+        "flex size-full flex-col items-center justify-center gap-2 bg-surface-2",
+        props.tone === "warn" ? "text-warn" : "text-muted",
+      )}
+    >
+      {props.icon}
+      {!props.small && <span className="text-sm">{props.children}</span>}
+    </div>
+  );
 }

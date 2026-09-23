@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { handler, parseBody, requireApiUser } from "@/lib/api";
-import { getParticipant, isSharingScreen } from "@/lib/livekit";
+import { getParticipant, isOnCamera } from "@/lib/livekit";
 import { requireMember } from "@/lib/rooms";
 import { recordHeartbeat, updateTimezone } from "@/lib/stats";
 import { timerState } from "@/lib/timer";
@@ -18,11 +18,11 @@ export const POST = handler(async (req) => {
   const room = await requireMember(roomId, me.id);
   await updateTimezone(me.id, me.timezone ?? "UTC", timezone);
 
-  // Don't trust the browser: ask LiveKit whether they're really in the call and sharing.
+  // Don't trust the browser: ask LiveKit whether they're really in the call with their camera on.
   let verified = false;
   try {
     const p = await getParticipant(roomId, me.id);
-    verified = !!p && isSharingScreen(p);
+    verified = !!p && isOnCamera(p);
   } catch (err) {
     console.warn("[heartbeat] LiveKit check failed", err);
   }

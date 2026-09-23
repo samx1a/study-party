@@ -12,10 +12,10 @@ import {
   safeTimeZone,
 } from "@/lib/streak";
 
-type BeatResult = { credited: number; reason?: "too_soon" | "not_sharing" | "on_break" | "first_beat" };
+type BeatResult = { credited: number; reason?: "too_soon" | "camera_off" | "on_break" | "first_beat" };
 
 // Records a heartbeat and credits at most one study minute. `verified` says whether
-// LiveKit confirmed the user is in the room sharing their screen right now.
+// LiveKit confirmed the user is in the room with their camera on right now.
 export async function recordHeartbeat(opts: {
   userId: string;
   roomId: string;
@@ -45,7 +45,7 @@ export async function recordHeartbeat(opts: {
         set: { roomId: opts.roomId, lastBeatAt: new Date(now) },
       });
 
-    if (!opts.verified) return { credited: 0, reason: "not_sharing" };
+    if (!opts.verified) return { credited: 0, reason: "camera_off" };
     if (opts.onBreak) return { credited: 0, reason: "on_break" };
     const credit = minutesToCredit(last, now);
     if (credit === 0) return { credited: 0, reason: "first_beat" };

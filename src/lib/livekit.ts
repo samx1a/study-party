@@ -59,9 +59,9 @@ export async function getParticipant(roomId: string, identity: string) {
   }
 }
 
-// True if this participant is publishing a live (unmuted) screen share right now.
-export function isSharingScreen(p: ParticipantInfo) {
-  return p.tracks.some((t) => t.source === TrackSource.SCREEN_SHARE && !t.muted);
+// True if this participant has their camera on (published and not muted) right now.
+export function isOnCamera(p: ParticipantInfo) {
+  return p.tracks.some((t) => t.source === TrackSource.CAMERA && !t.muted);
 }
 
 export async function ensureLiveKitRoom(roomId: string, maxParticipants: number) {

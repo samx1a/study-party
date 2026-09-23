@@ -26,10 +26,12 @@ async function newGuest(browser: Browser, name: string, next = "/dashboard") {
   return page;
 }
 
-async function joinWithCameraAndScreen(page: Page) {
+async function join(page: Page, { screen }: { screen: boolean }) {
   await expect(page.getByTestId("join")).toBeDisabled();
   await page.getByTestId("start-camera").click();
-  await page.getByTestId("pick-screen").click();
+  // Camera alone is enough to join; a screen is optional.
+  await expect(page.getByTestId("join")).toBeEnabled();
+  if (screen) await page.getByTestId("pick-screen").click();
   await page.getByTestId("join").click();
   await expect(page.getByTestId("timer")).toBeVisible();
 }
@@ -41,11 +43,11 @@ test("two friends run a full study session", async ({ browser }) => {
   await host.getByRole("button", { name: "Create room" }).click();
   await host.waitForURL("**/r/*");
   const roomPath = new URL(host.url()).pathname;
-  await joinWithCameraAndScreen(host);
+  await join(host, { screen: false });
 
   // Friend opens the invite link, types just a name, and lands in the room.
   const guest = await newGuest(browser, "Gabe", roomPath);
-  await joinWithCameraAndScreen(guest);
+  await join(guest, { screen: true });
 
   await expect(host.getByTestId("tile")).toHaveCount(2);
   await expect(guest.getByTestId("tile")).toHaveCount(2);
@@ -66,9 +68,26 @@ test("two friends run a full study session", async ({ browser }) => {
 
   // Privacy: guest hides their screen; host sees the placeholder.
   await guest.getByTestId("hide-screen").click();
-  await expect(host.getByText("Screen hidden for a moment")).toBeVisible();
+  await expect(host.getByText("Screen hidden")).toBeVisible();
   await guest.getByTestId("show-screen").click();
-  await expect(host.getByText("Screen hidden for a moment")).toBeHidden();
+  await expect(host.getByText("Screen hidden")).toBeHidden();
+
+  // Screen is optional: host starts sharing mid-session.
+  await host.getByTestId("share-screen").click();
+  await expect(host.getByTestId("stop-share")).toBeVisible();
+
+  // Camera is required: turning it off pauses you, and others see it.
+  await host.evaluate(() =>
+    (
+      window as unknown as {
+        __room: { localParticipant: { setCameraEnabled(on: boolean): Promise<unknown> } };
+      }
+    ).__room.localParticipant.setCameraEnabled(false),
+  );
+  await expect(host.getByTestId("paused")).toBeVisible();
+  await expect(guest.getByText("Paused, camera off")).toBeVisible();
+  await host.getByTestId("camera-on").click();
+  await expect(host.getByTestId("paused")).toBeHidden();
 
   // Skip to break: mics unlock.
   await guest.getByTestId("timer-skip").click();

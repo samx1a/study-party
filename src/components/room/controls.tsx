@@ -20,20 +20,40 @@ import type { Phase } from "@/lib/timer";
 
 const HIDE_SECONDS = 30;
 
-// Everything about *my* screen share: re-sharing, and hiding it for a moment.
+// My camera is required: if it's off, I'm paused until I turn it back on.
+export function useMyCamera() {
+  const { localParticipant, isCameraEnabled } = useLocalParticipant();
+  const [error, setError] = useState<string | null>(null);
+
+  async function turnOn() {
+    setError(null);
+    try {
+      await localParticipant.setCameraEnabled(true);
+    } catch (err) {
+      setError(describeMediaError(err, "camera"));
+    }
+  }
+
+  return { paused: !isCameraEnabled, turnOn, error };
+}
+
+// My screen share is optional: start, stop, or hide it for a moment.
 export function useMyScreen() {
   const { localParticipant, isScreenShareEnabled } = useLocalParticipant();
   const [hiddenFor, setHiddenFor] = useState(0); // seconds left, 0 = visible
   const [error, setError] = useState<string | null>(null);
   const timer = useRef<ReturnType<typeof setInterval>>(undefined);
 
-  const pub = () => localParticipant.getTrackPublication(Track.Source.ScreenShare);
+  const pub = useCallback(
+    () => localParticipant.getTrackPublication(Track.Source.ScreenShare),
+    [localParticipant],
+  );
 
   const show = useCallback(async () => {
     clearInterval(timer.current);
     setHiddenFor(0);
-    await localParticipant.getTrackPublication(Track.Source.ScreenShare)?.unmute();
-  }, [localParticipant]);
+    await pub()?.unmute();
+  }, [pub]);
 
   async function hide() {
     const p = pub();
@@ -45,7 +65,7 @@ export function useMyScreen() {
       setHiddenFor((s) => {
         if (s <= 1) {
           clearInterval(timer.current);
-          localParticipant.getTrackPublication(Track.Source.ScreenShare)?.unmute();
+          pub()?.unmute();
           return 0;
         }
         return s - 1;
@@ -53,22 +73,27 @@ export function useMyScreen() {
     }, 1000);
   }
 
-  async function share() {
+  async function start() {
     setError(null);
     try {
       await localParticipant.setScreenShareEnabled(true, SCREEN_CAPTURE);
-      setHiddenFor(0);
     } catch (err) {
+      // Closing the window picker isn't an error worth shouting about.
+      if (err instanceof Error && err.name === "NotAllowedError") return;
       setError(describeMediaError(err, "screen"));
     }
   }
 
+  async function stop() {
+    clearInterval(timer.current);
+    setHiddenFor(0);
+    await localParticipant.setScreenShareEnabled(false);
+  }
+
   useEffect(() => () => clearInterval(timer.current), []);
 
-  const hidden = hiddenFor > 0;
-  // If the share ended while hidden (browser "Stop sharing"), we're paused, not hidden.
-  const paused = !isScreenShareEnabled && !(hidden && pub());
-  return { paused, hidden, hiddenFor, hide, show, share, error };
+  const hidden = hiddenFor > 0 && !!pub();
+  return { sharing: isScreenShareEnabled || hidden, hidden, hiddenFor, hide, show, start, stop, error };
 }
 
 export function ControlBar(props: {
@@ -80,7 +105,7 @@ export function ControlBar(props: {
   onOpenSettings: () => void;
   onLeave: () => void;
 }) {
-  const { localParticipant, isMicrophoneEnabled, isCameraEnabled } = useLocalParticipant();
+  const { localParticipant, isMicrophoneEnabled } = useLocalParticipant();
   const [micError, setMicError] = useState<string | null>(null);
   const focus = props.phase === "focus";
   const { screen } = props;
@@ -116,28 +141,26 @@ export function ControlBar(props: {
           {focus ? "Muted for focus" : isMicrophoneEnabled ? "Mute" : "Unmute"}
         </ControlButton>
 
-        <ControlButton
-          onClick={() => localParticipant.setCameraEnabled(!isCameraEnabled)}
-          active={isCameraEnabled}
-          data-testid="camera"
-        >
-          <CameraIcon className="size-4" />
-          {isCameraEnabled ? "Camera" : "Camera off"}
-        </ControlButton>
-
-        {screen.hidden ? (
-          <ControlButton onClick={screen.show} active data-testid="show-screen">
-            <EyeOffIcon className="size-4" /> Hidden {screen.hiddenFor}s · Show
+        {screen.sharing ? (
+          <ControlButton onClick={screen.stop} active data-testid="stop-share">
+            <ScreenIcon className="size-4" /> Stop sharing
           </ControlButton>
         ) : (
-          <ControlButton onClick={screen.hide} disabled={screen.paused} data-testid="hide-screen">
-            <EyeOffIcon className="size-4" /> Hide {HIDE_SECONDS}s
+          <ControlButton onClick={screen.start} data-testid="share-screen">
+            <ScreenIcon className="size-4" /> Share screen
           </ControlButton>
         )}
 
-        <ControlButton onClick={screen.share} title="Share a different window">
-          <ScreenIcon className="size-4" /> Switch window
-        </ControlButton>
+        {screen.sharing &&
+          (screen.hidden ? (
+            <ControlButton onClick={screen.show} active data-testid="show-screen">
+              <EyeOffIcon className="size-4" /> Hidden {screen.hiddenFor}s · Show
+            </ControlButton>
+          ) : (
+            <ControlButton onClick={screen.hide} data-testid="hide-screen">
+              <EyeOffIcon className="size-4" /> Hide {HIDE_SECONDS}s
+            </ControlButton>
+          ))}
       </div>
 
       {/* Right: panels, host settings, and leave. */}
@@ -179,19 +202,20 @@ function ControlButton({
   );
 }
 
-export function PausedOverlay({ onShare }: { onShare: () => void }) {
+export function PausedOverlay({ onTurnOn, error }: { onTurnOn: () => void; error: string | null }) {
   return (
     <div
-      className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-bg/95 p-6 text-center backdrop-blur-sm"
+      className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-2xl bg-bg/95 p-6 text-center backdrop-blur-sm"
       data-testid="paused"
     >
-      <h2 className="text-4xl font-semibold tracking-tight">You&apos;re paused</h2>
+      <h2 className="text-3xl font-semibold tracking-tight">You&apos;re paused</h2>
       <p className="max-w-md text-muted">
-        Your screen share stopped. Share a window to keep studying with the group. Study time doesn&apos;t
-        count while you&apos;re paused.
+        Your camera is off. Turn it back on to keep studying with the group. Study time doesn&apos;t count
+        while you&apos;re paused.
       </p>
-      <Button size="lg" onClick={onShare} className="mt-2" data-testid="reshare">
-        <ScreenIcon className="size-5" /> Share a window
+      {error && <p className="max-w-md text-sm text-danger">{error}</p>}
+      <Button size="lg" onClick={onTurnOn} className="mt-2" data-testid="camera-on">
+        <CameraIcon className="size-5" /> Turn camera on
       </Button>
     </div>
   );

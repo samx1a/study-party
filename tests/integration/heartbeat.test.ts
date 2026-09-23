@@ -42,11 +42,11 @@ describe("recordHeartbeat", () => {
     expect(await beat(T0 + 5_000)).toEqual({ credited: 0, reason: "too_soon" });
   });
 
-  it("doesn't count time when not sharing or on a break", async () => {
+  it("doesn't count time with the camera off or on a break", async () => {
     await beat(T0);
     expect(await beat(T0 + 60_000, { verified: false })).toMatchObject({
       credited: 0,
-      reason: "not_sharing",
+      reason: "camera_off",
     });
     expect(await beat(T0 + 120_000, { onBreak: true })).toMatchObject({ credited: 0, reason: "on_break" });
     expect(await db.select().from(studyDay).where(eq(studyDay.userId, USER))).toHaveLength(0);

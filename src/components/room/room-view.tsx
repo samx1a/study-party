@@ -9,7 +9,7 @@ import { playChime } from "@/lib/chime";
 import { ConnectionBanner } from "./connection-banner";
 import { GoalsPanel } from "./goals-panel";
 import { SettingsDialog } from "./settings-dialog";
-import { ControlBar, PausedOverlay, useMyScreen } from "./controls";
+import { ControlBar, PausedOverlay, useMyCamera, useMyScreen } from "./controls";
 import { TimerControls, TimerDisplay, TimerProgress } from "./timer-bar";
 import { useHeartbeat } from "./use-heartbeat";
 import { useRoomState } from "./use-room-state";
@@ -28,6 +28,7 @@ export function RoomView(props: {
   const { room, me } = state;
   const timer = useTimer(room, serverNow);
   const screen = useMyScreen();
+  const camera = useMyCamera();
   useHeartbeat(room.id);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -82,7 +83,7 @@ export function RoomView(props: {
       <div className="flex min-h-0 flex-1 gap-3 px-3 pb-2">
         <main className="relative min-w-0 flex-1">
           <VideoStage goals={state.goals} canRemove={me.isHost} onRemove={removeParticipant} />
-          {screen.paused && <PausedOverlay onShare={screen.share} />}
+          {camera.paused && <PausedOverlay onTurnOn={camera.turnOn} error={camera.error} />}
         </main>
         {sidebarOpen && (
           <GoalsPanel

@@ -11,7 +11,7 @@ type Props = {
   roomName: string;
   joining: boolean;
   error?: string;
-  onJoin: (camera: LocalVideoTrack, screen: LocalTrack) => void;
+  onJoin: (camera: LocalVideoTrack, screen: LocalTrack | null) => void;
 };
 
 function Preview({ track, mirror }: { track: LocalTrack | null; mirror?: boolean }) {
@@ -107,7 +107,8 @@ export function Prejoin({ roomName, joining, error, onJoin }: Props) {
     );
   }
 
-  const ready = !!camera && !!screen;
+  // Camera is required; sharing a window is optional.
+  const ready = !!camera;
 
   return (
     <Shell roomName={roomName}>
@@ -116,7 +117,7 @@ export function Prejoin({ roomName, joining, error, onJoin }: Props) {
           n={1}
           title="Camera"
           done={!!camera}
-          hint="Friends see you in a small bubble."
+          hint="Required. Everyone in the room keeps their camera on."
           media={camera ? <Preview track={camera} mirror /> : null}
           action={
             camera ? null : (
@@ -129,13 +130,13 @@ export function Prejoin({ roomName, joining, error, onJoin }: Props) {
         />
         <Step
           n={2}
-          title="Screen"
+          title="Screen (optional)"
           done={!!screen}
-          hint="Share one window, like your notes or IDE. Not your whole screen."
+          hint="Optional. Share one window, like your notes or IDE, so friends can see what you're working on."
           media={screen ? <Preview track={screen} /> : null}
           action={
-            <Button variant={screen ? "secondary" : "primary"} onClick={pickScreen} data-testid="pick-screen">
-              {screen ? "Pick a different window" : "Choose a window"}
+            <Button variant="secondary" onClick={pickScreen} data-testid="pick-screen">
+              {screen ? "Pick a different window" : "Share a window"}
             </Button>
           }
           error={screenError}
@@ -149,13 +150,13 @@ export function Prejoin({ roomName, joining, error, onJoin }: Props) {
           className="w-full max-w-xs"
           disabled={!ready || joining}
           onClick={() => {
-            if (!camera || !screen) return;
+            if (!camera) return;
             handedOff.current = true;
             onJoin(camera, screen);
           }}
           data-testid="join"
         >
-          {joining ? "Joining…" : ready ? "Join room" : "Turn on camera and screen to join"}
+          {joining ? "Joining…" : ready ? "Join room" : "Turn on your camera to join"}
         </Button>
         <p className="text-center text-xs text-muted">
           Your mic starts muted and stays muted during focus time. Nothing is recorded.

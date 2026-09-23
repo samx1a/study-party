@@ -26,13 +26,13 @@ export function RoomClient({ initial, userName }: { initial: RoomState; userName
   const roomId = initial.room.id;
   const [stage, setStage] = useState<Stage>({ name: "prejoin" });
 
-  async function join(camera: LocalVideoTrack, screen: LocalTrack) {
+  async function join(camera: LocalVideoTrack, screen: LocalTrack | null) {
     setStage({ name: "joining" });
     const res = await fetch(`/api/rooms/${roomId}/token`, { method: "POST" });
     const body = await res.json().catch(() => ({}));
     if (!res.ok) {
       camera.stop();
-      screen.stop();
+      screen?.stop();
       if (body.code === "banned") {
         setStage({
           name: "ended",
@@ -52,19 +52,15 @@ export function RoomClient({ initial, userName }: { initial: RoomState; userName
     const room = createStudyRoom();
     try {
       await room.connect(body.url, body.token);
-      await room.localParticipant.publishTrack(camera, {
-        source: Track.Source.Camera,
-      });
-      await room.localParticipant.publishTrack(screen, {
-        source: Track.Source.ScreenShare,
-      });
+      await room.localParticipant.publishTrack(camera, { source: Track.Source.Camera });
+      if (screen) await room.localParticipant.publishTrack(screen, { source: Track.Source.ScreenShare });
       // Handy for debugging and end-to-end tests; never exposed in production builds.
       if (process.env.NODE_ENV !== "production") (window as unknown as { __room: Room }).__room = room;
       setStage({ name: "in-room", room });
     } catch (err) {
       console.error(err);
       camera.stop();
-      screen.stop();
+      screen?.stop();
       await room.disconnect();
       setStage({
         name: "prejoin",
