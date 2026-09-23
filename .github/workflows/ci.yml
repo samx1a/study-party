@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  DATABASE_URL: postgres://postgres:postgres@localhost:5432/study_party
+  BETTER_AUTH_SECRET: ci-secret-ci-secret-ci-secret-ci-secret
+  BETTER_AUTH_URL: http://localhost:3100
+  LIVEKIT_API_KEY: devkey
+  LIVEKIT_API_SECRET: secret
+  LIVEKIT_URL: http://localhost:7880
+  NEXT_PUBLIC_LIVEKIT_URL: ws://localhost:7880
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: study_party
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npx drizzle-kit migrate
+      - run: npm test
+      - run: npm run build
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: check
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: study_party
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx drizzle-kit migrate
+      - name: Start LiveKit (dev mode)
+        run: |
+          curl -sSL https://get.livekit.io | bash
+          livekit-server --dev --bind 127.0.0.1 > livekit.log 2>&1 &
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-results
+          path: |
+            test-results
+            livekit.log
