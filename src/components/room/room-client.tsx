@@ -46,6 +46,8 @@ export function RoomClient({ initial, userName }: { initial: RoomState; userName
       await room.connect(body.url, body.token);
       await room.localParticipant.publishTrack(camera, { source: Track.Source.Camera });
       await room.localParticipant.publishTrack(screen, { source: Track.Source.ScreenShare });
+      // Handy for debugging and end-to-end tests; never exposed in production builds.
+      if (process.env.NODE_ENV !== "production") (window as unknown as { __room: Room }).__room = room;
       setStage({ name: "in-room", room });
     } catch (err) {
       console.error(err);

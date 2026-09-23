@@ -6,6 +6,7 @@ import { LeaveIcon, LinkIcon } from "@/components/icons";
 import { Button } from "@/components/ui";
 import type { RoomState } from "@/lib/room-types";
 import { playChime } from "@/lib/chime";
+import { ControlBar, PausedOverlay, useMyScreen } from "./controls";
 import { TimerControls, TimerDisplay, TimerProgress } from "./timer-bar";
 import { useRoomState } from "./use-room-state";
 import { usePhaseChange, useTimer } from "./use-timer";
@@ -22,6 +23,8 @@ export function RoomView(props: {
   const { state, refresh, serverNow } = useRoomState(props.initial.room.id, props.initial);
   const { room, me } = state;
   const timer = useTimer(room, serverNow);
+  const screen = useMyScreen();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   usePhaseChange(timer.phase, (next) => {
     if (next !== "idle") playChime(next);
@@ -72,9 +75,17 @@ export function RoomView(props: {
       </header>
       <TimerProgress timer={timer} />
 
-      <main className="min-h-0 flex-1 p-3">
+      <main className="relative min-h-0 flex-1 p-3">
         <VideoStage goals={state.goals} canRemove={me.isHost} onRemove={removeParticipant} />
+        {screen.paused && <PausedOverlay onShare={screen.share} />}
       </main>
+
+      <ControlBar
+        phase={timer.phase}
+        screen={screen}
+        sidebarOpen={sidebarOpen}
+        onToggleSidebar={() => setSidebarOpen((o) => !o)}
+      />
 
       <RoomAudioRenderer />
     </div>
