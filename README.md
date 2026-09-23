@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Study Party
 
-## Getting Started
+**Study together. Screens on.**
 
-First, run the development server:
+Study Party is a video room for studying with friends. Everyone shares their
+camera **and** a screen, a shared Pomodoro timer keeps the room in sync, and
+mics lock during focus time. Your study time turns into hours and streaks.
+
+- 🖥️ **Screens on**: you must share a window to join. Stop sharing and you're paused, and everyone can see it.
+- 🍅 **Shared timer**: 25/5 focus/break by default, in sync for everyone, with a chime at each switch.
+- 🤫 **Quiet focus**: mics are forced off during focus and unlock on the break.
+- ✅ **Session goals**: write what you'll finish and check it off. Everyone sees everyone's progress.
+- 🙈 **Privacy**: hide your screen for 30s in one click. Nothing is recorded.
+- 🔥 **Streaks & hours**: minutes only count while your screen is really being shared (checked on the server).
+- 🔒 **Invite-only rooms**: the link is the invite, and the host can remove people.
+
+## Tech stack
+
+| Part | Tool |
+|---|---|
+| App + API | Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4 |
+| Video | LiveKit (open-source video server; LiveKit Cloud in production) |
+| Database | Postgres + Drizzle ORM |
+| Login | Better Auth (email + password) |
+| Tests | Vitest (unit + database), Playwright (two real browsers with fake cameras) |
+
+How it all fits together, and why, is in **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**.
+To put it online, follow **[docs/DEPLOY.md](docs/DEPLOY.md)**.
+
+## Run it locally
+
+You need Node 20.9+, Postgres, and the LiveKit server.
 
 ```bash
+# 1. Install tools (macOS)
+brew install postgresql@16 livekit
+brew services start postgresql@16
+
+# 2. Install packages and create your env file
+npm install
+cp .env.example .env.local        # then set BETTER_AUTH_SECRET: openssl rand -base64 32
+
+# 3. Create the database and tables
+createdb study_party
+npm run db:migrate
+
+# 4. Start the video server (terminal 1) and the app (terminal 2)
+npm run livekit
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3100, create an account, and make a room. To test with
+a "friend", open the room link in a private window and sign up as someone else.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | What it does |
+|---|---|
+| `npm run dev` | Start the app on port 3100 |
+| `npm run livekit` | Start a local LiveKit server (key `devkey`, secret `secret`) |
+| `npm run db:generate` | Create a new migration after editing `src/db/schema.ts` |
+| `npm run db:migrate` | Apply migrations |
+| `npm test` | Unit + database tests (needs `createdb study_party_test && npm run test:db:setup` once) |
+| `npm run e2e` | Browser tests: two people run a full session (needs Postgres + LiveKit running) |
+| `npm run check` | Lint + typecheck + tests |
 
-## Learn More
+## Project layout
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+  app/                 pages and API routes
+    api/rooms/[id]/    token, state, timer, goals, kick, settings
+    api/heartbeat/     credits study minutes
+    r/[id]/            the study room
+    dashboard/         stats + your rooms
+  components/room/     room UI: pre-join, video grid, timer, goals, controls
+  db/schema.ts         database tables
+  lib/                 timer + streak logic, LiveKit helpers, auth, room rules
+tests/
+  unit/                pure logic (timer, streaks)
+  integration/         heartbeat + stats against a real database
+  e2e/                 Playwright: full two-person session
+docs/                  architecture and deploy guides
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Status and what's next
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See the **Future work** section of [ARCHITECTURE.md](docs/ARCHITECTURE.md#9-future-work).
+Top items: password reset emails, Google sign-in, server-enforced muting, and
+public rooms with moderation.
