@@ -52,7 +52,8 @@ export function SettingsDialog({
   }
 
   async function deleteRoom() {
-    if (!confirm("Delete this room for everyone? This can't be undone.")) return;
+    if (!confirm("Delete this room for everyone? This can't be undone."))
+      return;
     const res = await fetch(`/api/rooms/${room.id}`, { method: "DELETE" });
     if (res.ok) router.replace("/dashboard");
     else setError("Couldn't delete the room.");
@@ -62,26 +63,56 @@ export function SettingsDialog({
     <dialog
       ref={ref}
       onClose={onClose}
-      className="m-auto w-full max-w-md rounded-2xl border border-border bg-surface p-6 text-text backdrop:bg-black/60"
+      className="m-auto w-full max-w-md rounded-2xl border border-border bg-surface p-6 text-text backdrop:bg-text/30"
     >
-      <h2 className="font-display text-3xl">Room settings</h2>
-      <p className="mt-1 text-sm text-muted">Only you (the host) can change these.</p>
-      <form onSubmit={save} className="mt-6 flex flex-col gap-4" key={String(open)}>
+      <h2 className="text-3xl font-semibold tracking-tight">Room settings</h2>
+      <p className="mt-1 text-sm text-muted">
+        Only you (the host) can change these.
+      </p>
+      <form
+        onSubmit={save}
+        className="mt-6 flex flex-col gap-4"
+        key={String(open)}
+      >
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="room-name">Name</Label>
-          <Input id="room-name" name="name" defaultValue={room.name} required maxLength={60} />
+          <Input
+            id="room-name"
+            name="name"
+            defaultValue={room.name}
+            required
+            maxLength={60}
+          />
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="focus">Focus (minutes)</Label>
-            <Input id="focus" name="focus" type="number" min={5} max={120} defaultValue={room.focusMinutes} required />
+            <Input
+              id="focus"
+              name="focus"
+              type="number"
+              min={5}
+              max={120}
+              defaultValue={room.focusMinutes}
+              required
+            />
           </div>
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="break">Break (minutes)</Label>
-            <Input id="break" name="break" type="number" min={1} max={60} defaultValue={room.breakMinutes} required />
+            <Input
+              id="break"
+              name="break"
+              type="number"
+              min={1}
+              max={60}
+              defaultValue={room.breakMinutes}
+              required
+            />
           </div>
         </div>
-        <p className="text-xs text-muted">Changing the lengths restarts a running timer from the top of focus.</p>
+        <p className="text-xs text-muted">
+          Changing the lengths restarts a running timer from the top of focus.
+        </p>
         <ErrorText>{error}</ErrorText>
         <div className="flex justify-between gap-2 pt-2">
           <Button type="button" variant="danger" onClick={deleteRoom}>

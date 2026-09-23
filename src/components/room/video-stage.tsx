@@ -1,6 +1,10 @@
 "use client";
 
-import { useParticipants, useTracks, type TrackReference } from "@livekit/components-react";
+import {
+  useParticipants,
+  useTracks,
+  type TrackReference,
+} from "@livekit/components-react";
 import { Track } from "livekit-client";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { RoomGoal } from "@/lib/room-types";
@@ -15,11 +19,16 @@ type Props = {
 // Lays out everyone's tile. Click a tile to spotlight it (big) with the rest in a strip.
 export function VideoStage({ goals, canRemove, onRemove }: Props) {
   const participants = useParticipants();
-  const tracks = useTracks([Track.Source.Camera, Track.Source.ScreenShare], { onlySubscribed: false });
+  const tracks = useTracks([Track.Source.Camera, Track.Source.ScreenShare], {
+    onlySubscribed: false,
+  });
   const [spotlight, setSpotlight] = useState<string | null>(null);
 
   const byIdentity = useMemo(() => {
-    const map = new Map<string, { camera?: TrackReference; screen?: TrackReference }>();
+    const map = new Map<
+      string,
+      { camera?: TrackReference; screen?: TrackReference }
+    >();
     for (const t of tracks) {
       const entry = map.get(t.participant.identity) ?? {};
       if (t.source === Track.Source.Camera) entry.camera = t;
@@ -41,7 +50,10 @@ export function VideoStage({ goals, canRemove, onRemove }: Props) {
   }, [goals]);
 
   // Spotlighted person left: go back to the grid.
-  const active = spotlight && participants.some((p) => p.identity === spotlight) ? spotlight : null;
+  const active =
+    spotlight && participants.some((p) => p.identity === spotlight)
+      ? spotlight
+      : null;
 
   const tile = (identity: string, size: "grid" | "spotlight" | "strip") => {
     const p = participants.find((x) => x.identity === identity)!;
@@ -79,20 +91,32 @@ export function VideoStage({ goals, canRemove, onRemove }: Props) {
     );
   }
 
-  return <FitGrid count={participants.length}>{participants.map((p) => tile(p.identity, "grid"))}</FitGrid>;
+  return (
+    <FitGrid count={participants.length}>
+      {participants.map((p) => tile(p.identity, "grid"))}
+    </FitGrid>
+  );
 }
 
 const GAP = 12;
 
 // Picks the column count that makes 16:9 tiles as large as possible in the space available.
-function FitGrid({ count, children }: { count: number; children: React.ReactNode[] }) {
+function FitGrid({
+  count,
+  children,
+}: {
+  count: number;
+  children: React.ReactNode[];
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const [box, setBox] = useState({ w: 0, h: 0 });
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const ro = new ResizeObserver(([e]) => setBox({ w: e.contentRect.width, h: e.contentRect.height }));
+    const ro = new ResizeObserver(([e]) =>
+      setBox({ w: e.contentRect.width, h: e.contentRect.height }),
+    );
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
@@ -100,7 +124,10 @@ function FitGrid({ count, children }: { count: number; children: React.ReactNode
   let best = { cols: 1, w: 0 };
   for (let cols = 1; cols <= Math.max(1, count); cols++) {
     const rows = Math.ceil(count / cols);
-    const w = Math.min((box.w - GAP * (cols - 1)) / cols, ((box.h - GAP * (rows - 1)) / rows) * (16 / 9));
+    const w = Math.min(
+      (box.w - GAP * (cols - 1)) / cols,
+      ((box.h - GAP * (rows - 1)) / rows) * (16 / 9),
+    );
     if (w > best.w) best = { cols, w };
   }
 
@@ -109,10 +136,17 @@ function FitGrid({ count, children }: { count: number; children: React.ReactNode
       {/* Flex-wrap (not grid) so a half-empty last row is centered. */}
       <div
         className="flex flex-wrap justify-center"
-        style={{ gap: GAP, width: best.cols * Math.floor(best.w) + GAP * (best.cols - 1) }}
+        style={{
+          gap: GAP,
+          width: best.cols * Math.floor(best.w) + GAP * (best.cols - 1),
+        }}
       >
         {children.map((c, i) => (
-          <div key={i} className="aspect-video" style={{ width: Math.floor(best.w) }}>
+          <div
+            key={i}
+            className="aspect-video"
+            style={{ width: Math.floor(best.w) }}
+          >
             {c}
           </div>
         ))}

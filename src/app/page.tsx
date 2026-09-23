@@ -34,10 +34,10 @@ export default async function Home() {
           <p className="mx-auto w-fit rounded-full border border-border px-3 py-1 text-xs text-muted">
             Free · No sign-up · No downloads
           </p>
-          <h1 className="mx-auto mt-6 max-w-3xl font-display text-5xl leading-[1.05] md:text-7xl">
+          <h1 className="mx-auto mt-6 max-w-3xl text-5xl font-bold leading-[1.05] tracking-tight md:text-6xl">
             Study together.
             <br />
-            <span className="text-accent">Screens on.</span>
+            <span className="text-accent-ink">Screens on.</span>
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg text-muted">
             A video room where everyone shares their camera and their screen. A shared focus timer keeps the
@@ -55,12 +55,11 @@ export default async function Home() {
           <RoomMock />
         </section>
 
-        <section className="border-y border-border bg-surface/50">
+        <section className="border-y border-border bg-surface">
           <div className="mx-auto grid max-w-6xl gap-8 px-4 py-20 md:grid-cols-4">
             {FEATURES.map((f) => (
               <div key={f.title}>
-                <div className="grid size-10 place-items-center rounded-xl bg-accent/15 text-lg">{f.icon}</div>
-                <h3 className="mt-4 font-semibold">{f.title}</h3>
+                <h3 className="font-semibold">{f.title}</h3>
                 <p className="mt-2 text-sm text-muted">{f.body}</p>
               </div>
             ))}
@@ -68,11 +67,11 @@ export default async function Home() {
         </section>
 
         <section id="how" className="mx-auto max-w-4xl scroll-mt-8 px-4 py-20">
-          <h2 className="text-center font-display text-4xl md:text-5xl">Three steps. Zero setup.</h2>
+          <h2 className="text-center text-4xl font-semibold tracking-tight md:text-5xl">Three steps. Zero setup.</h2>
           <ol className="mt-12 grid gap-6 md:grid-cols-3">
             {STEPS.map((s, i) => (
               <li key={s.title} className="rounded-2xl border border-border bg-surface p-6">
-                <span className="font-mono text-sm text-accent">0{i + 1}</span>
+                <span className="font-mono text-sm text-accent-ink">0{i + 1}</span>
                 <h3 className="mt-2 font-semibold">{s.title}</h3>
                 <p className="mt-2 text-sm text-muted">{s.body}</p>
               </li>
@@ -82,7 +81,7 @@ export default async function Home() {
 
         <section className="mx-auto max-w-4xl px-4 pb-24">
           <div className="rounded-3xl border border-border bg-surface p-8 md:p-12">
-            <h2 className="font-display text-3xl md:text-4xl">Built with your privacy in mind</h2>
+            <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">Built with your privacy in mind</h2>
             <ul className="mt-6 grid gap-4 text-sm text-muted md:grid-cols-2">
               <li>
                 <strong className="text-text">Nothing is recorded.</strong> Video goes straight to the people in
@@ -101,7 +100,7 @@ export default async function Home() {
                 the host can remove anyone.
               </li>
             </ul>
-            <Link href="/privacy" className="mt-6 inline-block text-sm text-accent hover:underline">
+            <Link href="/privacy" className="mt-6 inline-block text-sm text-accent-ink hover:underline">
               Read the privacy policy →
             </Link>
           </div>
@@ -115,22 +114,18 @@ export default async function Home() {
 
 const FEATURES = [
   {
-    icon: "🖥️",
     title: "Screens on",
     body: "Everyone shares a window. If you stop, you're paused, and your friends can see it.",
   },
   {
-    icon: "🍅",
     title: "One shared timer",
     body: "25 minutes of focus, 5 minutes of break, in sync for the whole room.",
   },
   {
-    icon: "🤫",
     title: "Quiet by default",
     body: "Mics lock during focus. Catch up with friends on the break.",
   },
   {
-    icon: "🔥",
     title: "Streaks & hours",
     body: "Study time only counts while your screen is shared. Keep the streak alive.",
   },
@@ -153,12 +148,12 @@ function RoomMock() {
   return (
     <div
       aria-hidden
-      className="relative mx-auto mt-16 max-w-4xl overflow-hidden rounded-2xl border border-border bg-surface text-left shadow-2xl shadow-accent/5"
+      className="relative mx-auto mt-16 max-w-4xl overflow-hidden rounded-2xl border border-border bg-surface text-left shadow-2xl shadow-accent/20"
     >
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <span className="text-sm font-semibold">CS 61B grind</span>
         <span className="flex items-center gap-2">
-          <span className="rounded-full bg-accent/15 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-accent uppercase">
+          <span className="rounded-full bg-accent/60 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-accent-ink uppercase">
             Focus · 2
           </span>
           <span className="font-mono text-lg font-semibold">18:42</span>
@@ -170,7 +165,7 @@ function RoomMock() {
       </div>
       <div className="grid grid-cols-2 gap-3 p-3">
         {people.map((p) => (
-          <div key={p.name} className="relative aspect-video overflow-hidden rounded-lg border border-border bg-bg">
+          <div key={p.name} className="relative aspect-video overflow-hidden rounded-lg border border-border bg-surface-2">
             {p.kind === "paused" ? (
               <div className="flex size-full items-center justify-center text-xs text-warn">⏸ Paused, not sharing</div>
             ) : (
@@ -178,14 +173,14 @@ function RoomMock() {
                 {p.lines.map((w, i) => (
                   <div
                     key={i}
-                    className={p.kind === "code" && i % 2 ? "ml-4 h-2 rounded-full bg-break/40" : "h-2 rounded-full bg-muted/30"}
+                    className={p.kind === "code" && i % 2 ? "ml-4 h-2 rounded-full bg-break" : "h-2 rounded-full bg-border"}
                     style={{ width: `${w}%` }}
                   />
                 ))}
               </div>
             )}
-            <span className="absolute bottom-2 left-2 rounded bg-black/60 px-1.5 py-0.5 text-[10px]">{p.name}</span>
-            <span className="absolute right-2 bottom-2 grid size-9 place-items-center rounded-full border-2 border-bg bg-surface-2 text-[10px] font-semibold text-muted md:size-12">
+            <span className="absolute bottom-2 left-2 rounded bg-surface px-1.5 py-0.5 text-[10px]">{p.name}</span>
+            <span className="absolute right-2 bottom-2 grid size-9 place-items-center rounded-full border-2 border-surface bg-accent text-[10px] font-semibold text-muted md:size-12">
               {p.name[0]}
             </span>
           </div>

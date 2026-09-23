@@ -100,7 +100,7 @@ export function AccountForms({
               device&apos;s zone when you save or join a room.
             </p>
           </div>
-          {msg.ok && <p className="text-sm text-break">{msg.ok}</p>}
+          {msg.ok && <p className="text-sm text-break-ink">{msg.ok}</p>}
           <ErrorText>{msg.error}</ErrorText>
           <Button type="submit" className="self-start">
             Save
@@ -118,7 +118,7 @@ export function AccountForms({
           </p>
           <Link
             href="/sign-up?next=/dashboard"
-            className="mt-4 inline-block text-sm text-accent underline underline-offset-4"
+            className="mt-4 inline-block text-sm text-accent-ink underline underline-offset-4"
           >
             Create an account →
           </Link>
@@ -152,7 +152,7 @@ export function AccountForms({
                   autoComplete="new-password"
                 />
               </div>
-              {pwMsg.ok && <p className="text-sm text-break">{pwMsg.ok}</p>}
+              {pwMsg.ok && <p className="text-sm text-break-ink">{pwMsg.ok}</p>}
               <ErrorText>{pwMsg.error}</ErrorText>
               <Button type="submit" variant="secondary" className="self-start">
                 Change password

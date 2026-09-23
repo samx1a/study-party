@@ -69,3 +69,9 @@ export const CheckIcon = ({ className }: P) => (
     <path d="M20 6 9 17l-5-5" />
   </svg>
 );
+export const CameraIcon = ({ className }: P) => (
+  <svg {...base} className={className}>
+    <path d="M23 7l-7 5 7 5V7z" />
+    <rect x="1" y="5" width="15" height="14" rx="2" />
+  </svg>
+);

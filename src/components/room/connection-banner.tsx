@@ -22,10 +22,19 @@ export function ConnectionBanner() {
     };
   }, []);
 
-  if (offline || state === ConnectionState.Reconnecting || state === ConnectionState.SignalReconnecting) {
+  if (
+    offline ||
+    state === ConnectionState.Reconnecting ||
+    state === ConnectionState.SignalReconnecting
+  ) {
     return (
-      <div role="status" className="bg-warn/15 px-4 py-2 text-center text-sm text-warn">
-        {offline ? "You're offline. We'll reconnect when your internet is back…" : "Reconnecting…"}
+      <div
+        role="status"
+        className="bg-warn/15 px-4 py-2 text-center text-sm text-warn"
+      >
+        {offline
+          ? "You're offline. We'll reconnect when your internet is back…"
+          : "Reconnecting…"}
       </div>
     );
   }
@@ -33,7 +42,7 @@ export function ConnectionBanner() {
     return (
       <button
         onClick={mergedProps.onClick}
-        className="w-full bg-accent/15 px-4 py-2 text-center text-sm text-accent hover:bg-accent/25"
+        className="w-full bg-accent/60 px-4 py-2 text-center text-sm text-accent-ink hover:bg-accent-hover"
       >
         Your browser paused room sound. Click here to turn it on.
       </button>

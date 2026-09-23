@@ -20,7 +20,7 @@ export default async function RoomPage(props: PageProps<"/r/[id]">) {
     if (err instanceof HttpError && err.code === "banned") {
       return (
         <main className="flex flex-1 flex-col items-center justify-center gap-3 px-4 text-center">
-          <h1 className="font-display text-4xl">You can&apos;t join this room</h1>
+          <h1 className="text-4xl font-semibold tracking-tight">You can&apos;t join this room</h1>
           <p className="text-muted">The host removed you from it.</p>
           <ButtonLink href="/dashboard" variant="secondary" className="mt-4">
             Dashboard

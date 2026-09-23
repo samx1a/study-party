@@ -50,8 +50,8 @@ export function Input({ className, ...props }: ComponentProps<"input">) {
   return (
     <input
       className={cn(
-        "h-10 w-full rounded-lg border border-border bg-bg px-3 text-sm text-text",
-        "placeholder:text-muted/70 focus:border-accent focus:outline-none",
+        "h-10 w-full rounded-lg border border-border bg-surface px-3 text-sm text-text",
+        "placeholder:text-muted/70 focus:border-accent-ink focus:outline-none",
         className,
       )}
       {...props}

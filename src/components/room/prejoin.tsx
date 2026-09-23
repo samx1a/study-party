@@ -4,7 +4,12 @@ import type { LocalTrack, LocalVideoTrack } from "livekit-client";
 import { TrackEvent } from "livekit-client";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Button, ButtonLink, ErrorText } from "@/components/ui";
-import { canShareScreen, createCameraTrack, createScreenTrack, describeMediaError } from "@/lib/media";
+import {
+  canShareScreen,
+  createCameraTrack,
+  createScreenTrack,
+  describeMediaError,
+} from "@/lib/media";
 import { cn } from "@/lib/cn";
 
 type Props = {
@@ -14,7 +19,13 @@ type Props = {
   onJoin: (camera: LocalVideoTrack, screen: LocalTrack) => void;
 };
 
-function Preview({ track, mirror }: { track: LocalTrack | null; mirror?: boolean }) {
+function Preview({
+  track,
+  mirror,
+}: {
+  track: LocalTrack | null;
+  mirror?: boolean;
+}) {
   const ref = useRef<HTMLVideoElement>(null);
   useEffect(() => {
     const el = ref.current;
@@ -30,7 +41,10 @@ function Preview({ track, mirror }: { track: LocalTrack | null; mirror?: boolean
       muted
       playsInline
       autoPlay
-      className={cn("size-full object-contain", mirror && "-scale-x-100 object-cover")}
+      className={cn(
+        "size-full object-contain",
+        mirror && "-scale-x-100 object-cover",
+      )}
     />
   );
 }
@@ -43,7 +57,10 @@ export function Prejoin({ roomName, joining, error, onJoin }: Props) {
   // Server render assumes support; the browser answers for real after hydration.
   const supported = useSyncExternalStore(noop, canShareScreen, () => true);
   const handedOff = useRef(false);
-  const tracksRef = useRef<{ camera: LocalTrack | null; screen: LocalTrack | null }>({ camera: null, screen: null });
+  const tracksRef = useRef<{
+    camera: LocalTrack | null;
+    screen: LocalTrack | null;
+  }>({ camera: null, screen: null });
 
   useEffect(() => {
     tracksRef.current = { camera, screen };
@@ -91,10 +108,13 @@ export function Prejoin({ roomName, joining, error, onJoin }: Props) {
     return (
       <Shell roomName={roomName}>
         <div className="rounded-2xl border border-border bg-surface p-8 text-center">
-          <h2 className="font-display text-3xl">Open this on a computer</h2>
+          <h2 className="text-3xl font-semibold tracking-tight">
+            Open this on a computer
+          </h2>
           <p className="mx-auto mt-2 max-w-md text-muted">
-            Study Party needs screen sharing, which phones and tablets don&apos;t support. Open this link in
-            Chrome, Edge, Firefox, or Safari on a laptop or desktop.
+            Study Party needs screen sharing, which phones and tablets
+            don&apos;t support. Open this link in Chrome, Edge, Firefox, or
+            Safari on a laptop or desktop.
           </p>
           <ButtonLink href="/dashboard" variant="secondary" className="mt-6">
             Back to dashboard
@@ -131,7 +151,11 @@ export function Prejoin({ roomName, joining, error, onJoin }: Props) {
           hint="Share one window, like your notes or IDE. Not your whole screen."
           media={screen ? <Preview track={screen} /> : null}
           action={
-            <Button variant={screen ? "secondary" : "primary"} onClick={pickScreen} data-testid="pick-screen">
+            <Button
+              variant={screen ? "secondary" : "primary"}
+              onClick={pickScreen}
+              data-testid="pick-screen"
+            >
               {screen ? "Pick a different window" : "Choose a window"}
             </Button>
           }
@@ -152,10 +176,15 @@ export function Prejoin({ roomName, joining, error, onJoin }: Props) {
           }}
           data-testid="join"
         >
-          {joining ? "Joining…" : ready ? "Join room" : "Turn on camera and screen to join"}
+          {joining
+            ? "Joining…"
+            : ready
+              ? "Join room"
+              : "Turn on camera and screen to join"}
         </Button>
         <p className="text-center text-xs text-muted">
-          Your mic starts muted and stays muted during focus time. Nothing is recorded.
+          Your mic starts muted and stays muted during focus time. Nothing is
+          recorded.
         </p>
       </div>
     </Shell>
@@ -164,11 +193,17 @@ export function Prejoin({ roomName, joining, error, onJoin }: Props) {
 
 const noop = () => () => {};
 
-function Shell({ roomName, children }: { roomName: string; children: React.ReactNode }) {
+function Shell({
+  roomName,
+  children,
+}: {
+  roomName: string;
+  children: React.ReactNode;
+}) {
   return (
     <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col justify-center px-4 py-10">
       <p className="text-sm text-muted">Joining</p>
-      <h1 className="mb-8 font-display text-4xl">{roomName}</h1>
+      <h1 className="mb-8 text-4xl font-semibold tracking-tight">{roomName}</h1>
       {children}
     </main>
   );
@@ -189,15 +224,17 @@ function Step(props: {
         <span
           className={cn(
             "grid size-6 place-items-center rounded-full text-xs font-bold",
-            props.done ? "bg-break text-bg" : "bg-surface-2 text-muted",
+            props.done ? "bg-break text-break-ink" : "bg-surface-2 text-muted",
           )}
         >
           {props.done ? "✓" : props.n}
         </span>
         <h2 className="font-semibold">{props.title}</h2>
       </div>
-      <div className="grid aspect-video place-items-center overflow-hidden rounded-xl bg-bg">
-        {props.media ?? <p className="px-6 text-center text-sm text-muted">{props.hint}</p>}
+      <div className="grid aspect-video place-items-center overflow-hidden rounded-xl bg-surface-2">
+        {props.media ?? (
+          <p className="px-6 text-center text-sm text-muted">{props.hint}</p>
+        )}
       </div>
       {props.error && <ErrorText>{props.error}</ErrorText>}
       {props.action}

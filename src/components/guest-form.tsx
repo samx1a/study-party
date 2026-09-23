@@ -35,7 +35,7 @@ export function GuestForm() {
 
   return (
     <Card>
-      <h1 className="font-display text-3xl">{joiningRoom ? "Join the room" : "What should we call you?"}</h1>
+      <h1 className="text-3xl font-semibold tracking-tight">{joiningRoom ? "Join the room" : "What should we call you?"}</h1>
       <p className="mt-1 text-sm text-muted">No account needed. Your friends will see this name.</p>
       <form onSubmit={onSubmit} className="mt-6 flex flex-col gap-4">
         <div className="flex flex-col gap-1.5">
@@ -51,7 +51,7 @@ export function GuestForm() {
         Have an account?{" "}
         <Link
           href={`/sign-in?next=${encodeURIComponent(next)}`}
-          className="text-text underline underline-offset-4 hover:text-accent"
+          className="text-text underline underline-offset-4 hover:text-accent-ink"
         >
           Sign in
         </Link>

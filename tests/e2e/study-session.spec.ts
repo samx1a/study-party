@@ -54,6 +54,8 @@ test("two friends run a full study session", async ({ browser }) => {
   await host.getByTestId("timer-start").click();
   await expect(guest.getByTestId("timer")).toHaveAttribute("data-phase", "focus");
   await expect(guest.getByTestId("mic")).toBeDisabled();
+  await guest.getByTestId("goals-toggle").click();
+  await host.getByTestId("goals-toggle").click();
 
   // Goals: guest adds a goal and checks it off; host sees both.
   await guest.getByTestId("goal-input").fill("Finish lab 3");
@@ -89,7 +91,7 @@ test("signed-out visitors are asked for a name, then sent back", async ({ page }
 
 test("a guest can save their progress by creating an account", async ({ browser }) => {
   const page = await newGuest(browser, "Gia");
-  await expect(page.getByText("You're studying as a guest")).toBeVisible();
+  await expect(page.getByText("You're a guest")).toBeVisible();
   await page.getByLabel("Room name").fill("Guest room");
   await page.getByRole("button", { name: "Create room" }).click();
   await page.waitForURL("**/r/*");
@@ -104,5 +106,5 @@ test("a guest can save their progress by creating an account", async ({ browser 
   // Same room, now owned by the real account; guest banner gone.
   await expect(page.getByText("Guest room")).toBeVisible();
   await expect(page.getByText("You're the host")).toBeVisible();
-  await expect(page.getByText("You're studying as a guest")).toBeHidden();
+  await expect(page.getByText("You're a guest")).toBeHidden();
 });

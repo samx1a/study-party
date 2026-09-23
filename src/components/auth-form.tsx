@@ -50,7 +50,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
 
   return (
     <Card>
-      <h1 className="font-display text-3xl">{isSignUp ? "Create your account" : "Welcome back"}</h1>
+      <h1 className="text-3xl font-semibold tracking-tight">{isSignUp ? "Create your account" : "Welcome back"}</h1>
       <p className="mt-1 text-sm text-muted">
         {isSignUp ? "Free. Takes 20 seconds." : "Sign in to join your study room."}
       </p>
@@ -86,7 +86,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
 
       <p className="mt-6 text-center text-sm text-muted">
         {isSignUp ? "Already have an account? " : "New here? "}
-        <Link href={otherHref} className="text-text underline underline-offset-4 hover:text-accent">
+        <Link href={otherHref} className="text-text underline underline-offset-4 hover:text-accent-ink">
           {isSignUp ? "Sign in" : "Create an account"}
         </Link>
       </p>

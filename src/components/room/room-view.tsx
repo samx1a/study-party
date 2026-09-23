@@ -2,7 +2,7 @@
 
 import { RoomAudioRenderer, useDataChannel } from "@livekit/components-react";
 import { useCallback, useState } from "react";
-import { GearIcon, LeaveIcon, LinkIcon } from "@/components/icons";
+import { LinkIcon } from "@/components/icons";
 import { Button } from "@/components/ui";
 import type { RoomState } from "@/lib/room-types";
 import { playChime } from "@/lib/chime";
@@ -16,7 +16,10 @@ import { useRoomState } from "./use-room-state";
 import { usePhaseChange, useTimer } from "./use-timer";
 import { VideoStage } from "./video-stage";
 
-type RoomEvent = { type: "room-updated" } | { type: "goals-updated" } | { type: "kicked"; userId: string };
+type RoomEvent =
+  | { type: "room-updated" }
+  | { type: "goals-updated" }
+  | { type: "kicked"; userId: string };
 
 export function RoomView(props: {
   initial: RoomState;
@@ -24,17 +27,21 @@ export function RoomView(props: {
   onLeave: () => void;
   onKicked: () => void;
 }) {
-  const { state, setState, refresh, serverNow } = useRoomState(props.initial.room.id, props.initial);
+  const { state, setState, refresh, serverNow } = useRoomState(
+    props.initial.room.id,
+    props.initial,
+  );
   const { room, me } = state;
   const timer = useTimer(room, serverNow);
   const screen = useMyScreen();
   useHeartbeat(room.id);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   usePhaseChange(timer.phase, (next) => {
     if (next !== "idle") playChime(next);
-    if (next !== "idle") document.title = `${next === "focus" ? "Focus" : "Break"} · ${room.name}`;
+    if (next !== "idle")
+      document.title = `${next === "focus" ? "Focus" : "Break"} · ${room.name}`;
   });
 
   // The server nudges us over LiveKit when something changes; we refetch the real state.
@@ -72,24 +79,20 @@ export function RoomView(props: {
           <TimerDisplay timer={timer} />
           <TimerControls roomId={room.id} timer={timer} onChanged={refresh} />
         </div>
-        <div className="flex items-center justify-end gap-2">
-          {me.isHost && (
-            <Button variant="ghost" size="sm" onClick={() => setSettingsOpen(true)} aria-label="Room settings">
-              <GearIcon className="size-4" />
-            </Button>
-          )}
+        <div className="flex items-center justify-end">
           <InviteButton roomId={room.id} />
-          <Button variant="danger" size="sm" onClick={props.onLeave}>
-            <LeaveIcon className="size-4" /> Leave
-          </Button>
         </div>
       </header>
       <TimerProgress timer={timer} />
       <ConnectionBanner />
 
-      <div className="flex min-h-0 flex-1">
-        <main className="relative min-w-0 flex-1 p-3">
-          <VideoStage goals={state.goals} canRemove={me.isHost} onRemove={removeParticipant} />
+      <div className="flex min-h-0 flex-1 gap-3 px-3 pb-2">
+        <main className="relative min-w-0 flex-1">
+          <VideoStage
+            goals={state.goals}
+            canRemove={me.isHost}
+            onRemove={removeParticipant}
+          />
           {screen.paused && <PausedOverlay onShare={screen.share} />}
         </main>
         {sidebarOpen && (
@@ -108,10 +111,18 @@ export function RoomView(props: {
         screen={screen}
         sidebarOpen={sidebarOpen}
         onToggleSidebar={() => setSidebarOpen((o) => !o)}
+        isHost={me.isHost}
+        onOpenSettings={() => setSettingsOpen(true)}
+        onLeave={props.onLeave}
       />
 
       {me.isHost && (
-        <SettingsDialog room={room} open={settingsOpen} onClose={() => setSettingsOpen(false)} onSaved={refresh} />
+        <SettingsDialog
+          room={room}
+          open={settingsOpen}
+          onClose={() => setSettingsOpen(false)}
+          onSaved={refresh}
+        />
       )}
       <RoomAudioRenderer />
     </div>

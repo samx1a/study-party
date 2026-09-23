@@ -22,7 +22,13 @@ type Stage =
   | { name: "in-room"; room: Room }
   | { name: "ended"; title: string; body: string; canRejoin: boolean };
 
-export function RoomClient({ initial, userName }: { initial: RoomState; userName: string }) {
+export function RoomClient({
+  initial,
+  userName,
+}: {
+  initial: RoomState;
+  userName: string;
+}) {
   const roomId = initial.room.id;
   const [stage, setStage] = useState<Stage>({ name: "prejoin" });
 
@@ -34,9 +40,17 @@ export function RoomClient({ initial, userName }: { initial: RoomState; userName
       camera.stop();
       screen.stop();
       if (body.code === "banned") {
-        setStage({ name: "ended", title: "You were removed", body: body.error, canRejoin: false });
+        setStage({
+          name: "ended",
+          title: "You were removed",
+          body: body.error,
+          canRejoin: false,
+        });
       } else {
-        setStage({ name: "prejoin", error: body.error ?? "Couldn't join. Try again." });
+        setStage({
+          name: "prejoin",
+          error: body.error ?? "Couldn't join. Try again.",
+        });
       }
       return;
     }
@@ -44,17 +58,26 @@ export function RoomClient({ initial, userName }: { initial: RoomState; userName
     const room = createStudyRoom();
     try {
       await room.connect(body.url, body.token);
-      await room.localParticipant.publishTrack(camera, { source: Track.Source.Camera });
-      await room.localParticipant.publishTrack(screen, { source: Track.Source.ScreenShare });
+      await room.localParticipant.publishTrack(camera, {
+        source: Track.Source.Camera,
+      });
+      await room.localParticipant.publishTrack(screen, {
+        source: Track.Source.ScreenShare,
+      });
       // Handy for debugging and end-to-end tests; never exposed in production builds.
-      if (process.env.NODE_ENV !== "production") (window as unknown as { __room: Room }).__room = room;
+      if (process.env.NODE_ENV !== "production")
+        (window as unknown as { __room: Room }).__room = room;
       setStage({ name: "in-room", room });
     } catch (err) {
       console.error(err);
       camera.stop();
       screen.stop();
       await room.disconnect();
-      setStage({ name: "prejoin", error: "Couldn't connect to the video server. Check your connection and try again." });
+      setStage({
+        name: "prejoin",
+        error:
+          "Couldn't connect to the video server. Check your connection and try again.",
+      });
     }
   }
 
@@ -67,12 +90,28 @@ export function RoomClient({ initial, userName }: { initial: RoomState; userName
       if (reason === DisconnectReason.CLIENT_INITIATED) return; // handled by leave()
       const ended =
         reason === DisconnectReason.PARTICIPANT_REMOVED
-          ? { title: "You were removed", body: "The host removed you from this room.", canRejoin: false }
+          ? {
+              title: "You were removed",
+              body: "The host removed you from this room.",
+              canRejoin: false,
+            }
           : reason === DisconnectReason.ROOM_DELETED
-            ? { title: "Room closed", body: "The host deleted this room.", canRejoin: false }
+            ? {
+                title: "Room closed",
+                body: "The host deleted this room.",
+                canRejoin: false,
+              }
             : reason === DisconnectReason.DUPLICATE_IDENTITY
-              ? { title: "Opened in another tab", body: "You joined this room from another tab or window.", canRejoin: true }
-              : { title: "Connection lost", body: "We couldn't reconnect to the room.", canRejoin: true };
+              ? {
+                  title: "Opened in another tab",
+                  body: "You joined this room from another tab or window.",
+                  canRejoin: true,
+                }
+              : {
+                  title: "Connection lost",
+                  body: "We couldn't reconnect to the room.",
+                  canRejoin: true,
+                };
       setStage({ name: "ended", ...ended });
     };
     room.on(RoomEvent.Disconnected, onDisconnected);
@@ -97,12 +136,22 @@ export function RoomClient({ initial, userName }: { initial: RoomState; userName
           userName={userName}
           onLeave={async () => {
             await stage.room.disconnect();
-            setStage({ name: "ended", title: "You left the room", body: "Nice work. See you next session.", canRejoin: true });
+            setStage({
+              name: "ended",
+              title: "You left the room",
+              body: "Nice work. See you next session.",
+              canRejoin: true,
+            });
           }}
           onKicked={async () => {
             // We disconnect ourselves here (client-initiated), so set the end screen directly.
             await stage.room.disconnect();
-            setStage({ name: "ended", title: "You were removed", body: "The host removed you from this room.", canRejoin: false });
+            setStage({
+              name: "ended",
+              title: "You were removed",
+              body: "The host removed you from this room.",
+              canRejoin: false,
+            });
           }}
         />
       </RoomContext.Provider>
@@ -112,10 +161,14 @@ export function RoomClient({ initial, userName }: { initial: RoomState; userName
   if (stage.name === "ended") {
     return (
       <main className="flex flex-1 flex-col items-center justify-center gap-3 px-4 text-center">
-        <h1 className="font-display text-4xl">{stage.title}</h1>
+        <h1 className="text-4xl font-semibold tracking-tight">{stage.title}</h1>
         <p className="max-w-md text-muted">{stage.body}</p>
         <div className="mt-4 flex gap-2">
-          {stage.canRejoin && <Button onClick={() => setStage({ name: "prejoin" })}>Rejoin</Button>}
+          {stage.canRejoin && (
+            <Button onClick={() => setStage({ name: "prejoin" })}>
+              Rejoin
+            </Button>
+          )}
           <ButtonLink href="/dashboard" variant="secondary">
             Dashboard
           </ButtonLink>
