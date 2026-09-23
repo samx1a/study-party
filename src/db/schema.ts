@@ -19,6 +19,8 @@ export const user = pgTable("user", {
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").notNull().default(false),
   image: text("image"),
+  // Guests who joined with just a name (Better Auth "anonymous" plugin).
+  isAnonymous: boolean("is_anonymous").notNull().default(false),
   // IANA zone like "America/Los_Angeles". Used to decide which day study time counts toward.
   timezone: text("timezone").notNull().default("UTC"),
   createdAt: timestamp("created_at").notNull().defaultNow(),

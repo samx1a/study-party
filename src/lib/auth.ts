@@ -1,8 +1,10 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
+import { anonymous } from "better-auth/plugins";
 import { db, schema } from "@/db";
 import { env } from "@/lib/env";
+import { mergeGuestInto } from "@/lib/merge-guest";
 
 export const auth = betterAuth({
   secret: env().BETTER_AUTH_SECRET,
@@ -43,10 +45,19 @@ export const auth = betterAuth({
     customRules: {
       "/sign-in/email": { window: 60, max: 5 },
       "/sign-up/email": { window: 60, max: 3 },
+      "/sign-in/anonymous": { window: 60, max: 5 },
     },
   },
-  // Must be last: lets server actions set auth cookies.
-  plugins: [nextCookies()],
+  plugins: [
+    // Guests join with just a name. Behind the scenes they get a real (anonymous)
+    // user row, so rooms, goals, and streaks work the same as for accounts.
+    anonymous({
+      emailDomainName: "guest.studyparty.local",
+      onLinkAccount: ({ anonymousUser, newUser }) => mergeGuestInto(anonymousUser.user.id, newUser.user.id),
+    }),
+    // Must be last: lets server actions set auth cookies.
+    nextCookies(),
+  ],
 });
 
 export type Session = typeof auth.$Infer.Session;
