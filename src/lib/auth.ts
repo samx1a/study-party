@@ -32,7 +32,8 @@ export const auth = betterAuth({
     updateAge: 60 * 60 * 24, // refresh the cookie once a day
   },
   rateLimit: {
-    enabled: true,
+    // Off in dev so local testing with many sign-ins isn't blocked.
+    enabled: process.env.NODE_ENV === "production",
     storage: "database",
     window: 60,
     max: 100,
