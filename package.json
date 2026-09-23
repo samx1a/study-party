@@ -13,7 +13,8 @@
     "livekit": "livekit-server --dev --bind 127.0.0.1",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "test:db:setup": "DATABASE_URL=postgres://localhost:5432/study_party_test drizzle-kit migrate"
   },
   "dependencies": {
     "@livekit/components-react": "^2.9.24",
