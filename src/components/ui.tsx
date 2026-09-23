@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import { cn } from "@/lib/cn";
 import Link from "next/link";
 import type { ComponentProps } from "react";
 
@@ -19,7 +19,7 @@ const sizes: Record<Size, string> = {
 };
 
 export function buttonClass(variant: Variant = "primary", size: Size = "md", className?: string) {
-  return clsx(
+  return cn(
     "inline-flex items-center justify-center whitespace-nowrap transition-colors",
     "disabled:pointer-events-none disabled:opacity-50",
     variants[variant],
@@ -49,7 +49,7 @@ export function ButtonLink({
 export function Input({ className, ...props }: ComponentProps<"input">) {
   return (
     <input
-      className={clsx(
+      className={cn(
         "h-10 w-full rounded-lg border border-border bg-bg px-3 text-sm text-text",
         "placeholder:text-muted/70 focus:border-accent focus:outline-none",
         className,
@@ -60,18 +60,18 @@ export function Input({ className, ...props }: ComponentProps<"input">) {
 }
 
 export function Label({ className, ...props }: ComponentProps<"label">) {
-  return <label className={clsx("text-sm font-medium text-text", className)} {...props} />;
+  return <label className={cn("text-sm font-medium text-text", className)} {...props} />;
 }
 
 export function Card({ className, ...props }: ComponentProps<"div">) {
   return (
-    <div className={clsx("rounded-2xl border border-border bg-surface p-6", className)} {...props} />
+    <div className={cn("rounded-2xl border border-border bg-surface p-6", className)} {...props} />
   );
 }
 
 export function Logo({ className }: { className?: string }) {
   return (
-    <Link href="/" className={clsx("flex items-center gap-2 font-semibold", className)}>
+    <Link href="/" className={cn("flex items-center gap-2 font-semibold", className)}>
       <span className="grid size-7 place-items-center rounded-lg bg-accent text-accent-ink">
         <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={2.5}>
           <circle cx="12" cy="13" r="8" />
