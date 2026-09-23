@@ -7,7 +7,7 @@ export default function PrivacyPage() {
   return (
     <ProsePage title="Privacy" updated="September 23, 2026">
       <p>
-        Study Party is a place to study with friends, camera and screen on. That means privacy matters a lot.
+        Study Party is a place to study with friends, camera and screen on. Cameras are on, and screens can be shared, so privacy matters a lot.
         Here is exactly what we collect and what we don&apos;t, in plain words.
       </p>
 
@@ -19,8 +19,8 @@ export default function PrivacyPage() {
         </li>
         <li>Only people in the same room can see your video and screen.</li>
         <li>
-          You choose what to share. We recommend sharing a single window, not your whole screen. You can hide
-          your screen for 30 seconds at any time.
+          Screen sharing is optional. If you share, we recommend a single window, not your whole screen.
+          You can hide your screen for 30 seconds at any time.
         </li>
       </ul>
 

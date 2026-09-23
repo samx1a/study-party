@@ -1,7 +1,7 @@
 # Study Party — Architecture & System Design
 
-Study Party is a virtual study room. Everyone in a room shows their camera **and**
-their screen, the room runs a shared Pomodoro timer, and mics are muted while the
+Study Party is a virtual study room. Everyone in a room keeps their camera on
+(sharing a screen is optional), the room runs a shared Pomodoro timer, and mics are muted while the
 room is focusing. Your study time adds up to hours and streaks.
 
 This doc explains how the pieces fit and why they were picked.
@@ -13,7 +13,8 @@ This doc explains how the pieces fit and why they were picked.
 **Goals (v3)**
 
 - Invite-only rooms of up to 12 people, joined with a link.
-- Everyone must share a screen to be "in" the room. Stop sharing and you are paused.
+- Everyone must have their camera on to be "in" the room. Turn it off and you are paused.
+- Sharing a screen (one window) is optional.
 - A shared focus/break timer that stays in sync for everyone.
 - Mics are locked off during focus and open on breaks.
 - Each person sets goals for the session and checks them off.
@@ -135,17 +136,20 @@ round     = floor(elapsed / cycle) + 1
 - **Skip phase**: moves `timerStartedAt` so the next phase starts right now.
 - No cron jobs, no drift, and it works even if the server restarts.
 
-### 3.5 Required screen sharing
+### 3.5 Camera required, screen optional
 
-The browser never lets a site share the screen without the user clicking
-"Allow". So "required" means **gated**:
+The camera is what keeps people accountable, so it's **required**. The browser
+never turns on a camera without the user clicking "Allow", so "required" means **gated**:
 
-- **Pre-join screen**: you must grant camera and pick a screen/window before
-  the "Join" button is enabled.
-- **In the room**: if your screen share ends (you clicked "Stop sharing" in
-  the browser bar), you get a full "You're paused" overlay until you share again.
-  Others see a **Paused** badge on your tile.
-- **Study minutes only count while sharing** (checked on the server, see 3.7).
+- **Pre-join screen**: the "Join" button stays disabled until your camera is on.
+  Picking a window to share is optional.
+- **In the room**: if your camera turns off (unplugged, blocked, or turned off),
+  you get a full "You're paused" overlay with a "Turn camera on" button.
+  Others see **Paused, camera off** on your tile.
+- **Screen share** can be started and stopped any time from the control bar.
+  A tile shows your screen (with your camera in a bubble) when you share,
+  and your camera full-size when you don't.
+- **Study minutes only count while your camera is on** (checked on the server, see 3.7).
 
 ### 3.6 Mic rules
 
@@ -160,8 +164,8 @@ The browser never lets a site share the screen without the user clicking
 A signed-in client in a room sends `POST /api/heartbeat` every 60 seconds.
 The server:
 
-1. Checks the user is in that room *in LiveKit right now* and has a **live,
-   unmuted screen share** (asks LiveKit's room service directly). A browser
+1. Checks the user is in that room *in LiveKit right now* with their **camera
+   on** (asks LiveKit's room service directly). A browser
    can't fake this by just sending heartbeats.
 2. Checks the room isn't on a **break**.
 3. Looks at the user's `presence.lastBeatAt`. If the last beat was 45–150

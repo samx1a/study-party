@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Study Party: study together, screens on";
+export const alt = "Study Party: study together, cameras on";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -25,7 +25,7 @@ export default function OgImage() {
         Study Party
       </div>
       <div style={{ marginTop: 48, fontSize: 96, lineHeight: 1.05, fontWeight: 700 }}>Study together.</div>
-      <div style={{ fontSize: 96, lineHeight: 1.05, fontWeight: 700, color: "#29237d" }}>Screens on.</div>
+      <div style={{ fontSize: 96, lineHeight: 1.05, fontWeight: 700, color: "#29237d" }}>Cameras on.</div>
       <div style={{ marginTop: 32, fontSize: 32, color: "#6b6780" }}>
         Shared focus timer · Quiet during focus · Streaks
       </div>

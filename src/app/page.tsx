@@ -37,10 +37,10 @@ export default async function Home() {
           <h1 className="mx-auto mt-6 max-w-3xl text-5xl font-bold leading-[1.05] tracking-tight md:text-6xl">
             Study together.
             <br />
-            <span className="text-accent-ink">Screens on.</span>
+            <span className="text-accent-ink">Cameras on.</span>
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg text-muted">
-            A video room where everyone shares their camera and their screen. A shared focus timer keeps the
+            A video room where everyone keeps their camera on, and can share a screen if they want. A shared focus timer keeps the
             group quiet, then lets you talk on breaks. No more &quot;studying&quot; on TikTok.
           </p>
           <div className="mt-8 flex justify-center gap-3">
@@ -118,8 +118,8 @@ export default async function Home() {
 
 const FEATURES = [
   {
-    title: "Screens on",
-    body: "Everyone shares a window. If you stop, you're paused, and your friends can see it.",
+    title: "Cameras on",
+    body: "Everyone keeps their camera on. Turn it off and you're paused, and your friends can see it.",
   },
   {
     title: "One shared timer",
@@ -131,7 +131,7 @@ const FEATURES = [
   },
   {
     title: "Streaks & hours",
-    body: "Study time only counts while your screen is shared. Keep the streak alive.",
+    body: "Study time only counts while your camera is on. Keep the streak alive.",
   },
 ];
 
@@ -141,7 +141,7 @@ const STEPS = [
     title: "Send the link",
     body: "Friends type their name and join. No account needed. Works in Chrome, Edge, Firefox, or Safari on a computer.",
   },
-  { title: "Start focus", body: "Share a window, set your goals, hit start. The timer does the rest." },
+  { title: "Start focus", body: "Turn on your camera, set your goals, hit start. Share a window if you like." },
 ];
 
 // A static picture of the room UI, drawn in HTML so it stays sharp and light.

@@ -1,17 +1,18 @@
 # Study Party
 
-**Study together. Screens on.**
+**Study together. Cameras on.**
 
-Study Party is a video room for studying with friends. Everyone shares their
-camera **and** a screen, a shared Pomodoro timer keeps the room in sync, and
+Study Party is a video room for studying with friends. Everyone keeps their
+camera on (sharing a screen is optional), a shared Pomodoro timer keeps the room in sync, and
 mics lock during focus time. Your study time turns into hours and streaks.
 
-- 🖥️ **Screens on**: you must share a window to join. Stop sharing and you're paused, and everyone can see it.
+- 📷 **Cameras on**: your camera must be on to join. Turn it off and you're paused, and everyone can see it.
+- 🖥️ **Optional screen share**: share a window so friends can see what you're working on.
 - 🍅 **Shared timer**: 25/5 focus/break by default, in sync for everyone, with a chime at each switch.
 - 🤫 **Quiet focus**: mics are forced off during focus and unlock on the break.
 - ✅ **Session goals**: write what you'll finish and check it off. Everyone sees everyone's progress.
 - 🙈 **Privacy**: hide your screen for 30s in one click. Nothing is recorded.
-- 🔥 **Streaks & hours**: minutes only count while your screen is really being shared (checked on the server).
+- 🔥 **Streaks & hours**: minutes only count while your camera is really on (checked on the server).
 - 🔒 **Invite-only rooms**: the link is the invite, and the host can remove people.
 - 👋 **No sign-up**: friends type a name and they're in. Accounts are optional, for keeping your streak across devices.
 
