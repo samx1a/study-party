@@ -1,8 +1,9 @@
 import "server-only";
-import { and, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq, gt } from "drizzle-orm";
 import { customAlphabet } from "nanoid";
 import { db } from "@/db";
-import { room, roomMember, user } from "@/db/schema";
+import { goal, room, roomMember, user, type Room } from "@/db/schema";
+import { GOAL_WINDOW_HOURS, type RoomState } from "@/lib/room-types";
 import { HttpError } from "@/lib/api";
 
 // No look-alike characters (0/O, 1/l/I), so links survive being read aloud.
@@ -84,4 +85,28 @@ export async function listMyRooms(userId: string) {
     .innerJoin(user, eq(user.id, room.ownerId))
     .where(and(eq(roomMember.userId, userId), eq(roomMember.banned, false)))
     .orderBy(desc(roomMember.lastSeenAt));
+}
+
+export async function getRoomState(r: Room, userId: string): Promise<RoomState> {
+  const since = new Date(Date.now() - GOAL_WINDOW_HOURS * 3600_000);
+  const goals = await db
+    .select({ id: goal.id, userId: goal.userId, text: goal.text, done: goal.done })
+    .from(goal)
+    .where(and(eq(goal.roomId, r.id), gt(goal.createdAt, since)))
+    .orderBy(asc(goal.createdAt));
+
+  return {
+    serverNow: Date.now(),
+    me: { id: userId, isHost: r.ownerId === userId },
+    room: {
+      id: r.id,
+      name: r.name,
+      ownerId: r.ownerId,
+      focusMinutes: r.focusMinutes,
+      breakMinutes: r.breakMinutes,
+      timerStartedAt: r.timerStartedAt?.getTime() ?? null,
+      maxParticipants: r.maxParticipants,
+    },
+    goals,
+  };
 }
