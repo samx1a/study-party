@@ -8,7 +8,15 @@ const USER = "test-user-heartbeat";
 const ROOM = "test-room-hb";
 const T0 = new Date("2026-09-23T18:00:00Z").getTime();
 const beat = (now: number, extra: Partial<Parameters<typeof recordHeartbeat>[0]> = {}) =>
-  recordHeartbeat({ userId: USER, roomId: ROOM, timezone: "America/Los_Angeles", verified: true, onBreak: false, now, ...extra });
+  recordHeartbeat({
+    userId: USER,
+    roomId: ROOM,
+    timezone: "America/Los_Angeles",
+    verified: true,
+    onBreak: false,
+    now,
+    ...extra,
+  });
 
 beforeEach(async () => {
   await db.delete(user).where(eq(user.id, USER));
@@ -36,7 +44,10 @@ describe("recordHeartbeat", () => {
 
   it("doesn't count time when not sharing or on a break", async () => {
     await beat(T0);
-    expect(await beat(T0 + 60_000, { verified: false })).toMatchObject({ credited: 0, reason: "not_sharing" });
+    expect(await beat(T0 + 60_000, { verified: false })).toMatchObject({
+      credited: 0,
+      reason: "not_sharing",
+    });
     expect(await beat(T0 + 120_000, { onBreak: true })).toMatchObject({ credited: 0, reason: "on_break" });
     expect(await db.select().from(studyDay).where(eq(studyDay.userId, USER))).toHaveLength(0);
   });

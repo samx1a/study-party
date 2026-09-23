@@ -28,7 +28,11 @@ export const POST = handler(async (req) => {
   }
 
   const phase = timerState(
-    { startedAt: room.timerStartedAt?.getTime() ?? null, focusMinutes: room.focusMinutes, breakMinutes: room.breakMinutes },
+    {
+      startedAt: room.timerStartedAt?.getTime() ?? null,
+      focusMinutes: room.focusMinutes,
+      breakMinutes: room.breakMinutes,
+    },
     Date.now(),
   ).phase;
 

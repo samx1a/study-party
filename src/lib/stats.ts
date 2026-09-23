@@ -40,7 +40,10 @@ export async function recordHeartbeat(opts: {
     await tx
       .insert(presence)
       .values({ userId: opts.userId, roomId: opts.roomId, lastBeatAt: new Date(now) })
-      .onConflictDoUpdate({ target: presence.userId, set: { roomId: opts.roomId, lastBeatAt: new Date(now) } });
+      .onConflictDoUpdate({
+        target: presence.userId,
+        set: { roomId: opts.roomId, lastBeatAt: new Date(now) },
+      });
 
     if (!opts.verified) return { credited: 0, reason: "not_sharing" };
     if (opts.onBreak) return { credited: 0, reason: "on_break" };

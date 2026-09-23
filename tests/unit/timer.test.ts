@@ -11,7 +11,12 @@ describe("timerState", () => {
   });
 
   it("starts in focus, round 1", () => {
-    expect(timerState(cfg, 0)).toEqual({ phase: "focus", round: 1, remainingMs: 25 * MIN, phaseLengthMs: 25 * MIN });
+    expect(timerState(cfg, 0)).toEqual({
+      phase: "focus",
+      round: 1,
+      remainingMs: 25 * MIN,
+      phaseLengthMs: 25 * MIN,
+    });
   });
 
   it("switches to break exactly at the focus length", () => {

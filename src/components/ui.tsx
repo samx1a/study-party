@@ -64,9 +64,7 @@ export function Label({ className, ...props }: ComponentProps<"label">) {
 }
 
 export function Card({ className, ...props }: ComponentProps<"div">) {
-  return (
-    <div className={cn("rounded-2xl border border-border bg-surface p-6", className)} {...props} />
-  );
+  return <div className={cn("rounded-2xl border border-border bg-surface p-6", className)} {...props} />;
 }
 
 export function Logo({ className }: { className?: string }) {

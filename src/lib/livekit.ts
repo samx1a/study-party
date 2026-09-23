@@ -70,9 +70,7 @@ export async function ensureLiveKitRoom(roomId: string, maxParticipants: number)
 }
 
 export type RoomEvent =
-  | { type: "room-updated" }
-  | { type: "goals-updated" }
-  | { type: "kicked"; userId: string };
+  { type: "room-updated" } | { type: "goals-updated" } | { type: "kicked"; userId: string };
 
 // Nudge everyone in the room to refetch state. Best effort: clients also poll,
 // so a failure here only delays updates by a few seconds.

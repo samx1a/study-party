@@ -22,13 +22,7 @@ type Stage =
   | { name: "in-room"; room: Room }
   | { name: "ended"; title: string; body: string; canRejoin: boolean };
 
-export function RoomClient({
-  initial,
-  userName,
-}: {
-  initial: RoomState;
-  userName: string;
-}) {
+export function RoomClient({ initial, userName }: { initial: RoomState; userName: string }) {
   const roomId = initial.room.id;
   const [stage, setStage] = useState<Stage>({ name: "prejoin" });
 
@@ -65,8 +59,7 @@ export function RoomClient({
         source: Track.Source.ScreenShare,
       });
       // Handy for debugging and end-to-end tests; never exposed in production builds.
-      if (process.env.NODE_ENV !== "production")
-        (window as unknown as { __room: Room }).__room = room;
+      if (process.env.NODE_ENV !== "production") (window as unknown as { __room: Room }).__room = room;
       setStage({ name: "in-room", room });
     } catch (err) {
       console.error(err);
@@ -75,8 +68,7 @@ export function RoomClient({
       await room.disconnect();
       setStage({
         name: "prejoin",
-        error:
-          "Couldn't connect to the video server. Check your connection and try again.",
+        error: "Couldn't connect to the video server. Check your connection and try again.",
       });
     }
   }
@@ -164,11 +156,7 @@ export function RoomClient({
         <h1 className="text-4xl font-semibold tracking-tight">{stage.title}</h1>
         <p className="max-w-md text-muted">{stage.body}</p>
         <div className="mt-4 flex gap-2">
-          {stage.canRejoin && (
-            <Button onClick={() => setStage({ name: "prejoin" })}>
-              Rejoin
-            </Button>
-          )}
+          {stage.canRejoin && <Button onClick={() => setStage({ name: "prejoin" })}>Rejoin</Button>}
           <ButtonLink href="/dashboard" variant="secondary">
             Dashboard
           </ButtonLink>

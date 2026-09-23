@@ -10,7 +10,10 @@ export default function TermsPage() {
       <h2>Be decent</h2>
       <ul>
         <li>Only share things on your screen that everyone in the room is OK seeing.</li>
-        <li>No harassment, hate, sexual content, or anything illegal. Hosts can remove people, and we can close accounts.</li>
+        <li>
+          No harassment, hate, sexual content, or anything illegal. Hosts can remove people, and we can close
+          accounts.
+        </li>
         <li>Don&apos;t record or screenshot other people without their permission.</li>
       </ul>
       <h2>Your account</h2>

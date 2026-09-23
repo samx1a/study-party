@@ -17,7 +17,11 @@ export function useTimer(room: RoomState["room"], serverNow: () => number): Time
     const tick = () =>
       setState(
         timerState(
-          { startedAt: room.timerStartedAt, focusMinutes: room.focusMinutes, breakMinutes: room.breakMinutes },
+          {
+            startedAt: room.timerStartedAt,
+            focusMinutes: room.focusMinutes,
+            breakMinutes: room.breakMinutes,
+          },
           serverNow(),
         ),
       );

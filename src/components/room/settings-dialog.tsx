@@ -52,8 +52,7 @@ export function SettingsDialog({
   }
 
   async function deleteRoom() {
-    if (!confirm("Delete this room for everyone? This can't be undone."))
-      return;
+    if (!confirm("Delete this room for everyone? This can't be undone.")) return;
     const res = await fetch(`/api/rooms/${room.id}`, { method: "DELETE" });
     if (res.ok) router.replace("/dashboard");
     else setError("Couldn't delete the room.");
@@ -66,23 +65,11 @@ export function SettingsDialog({
       className="m-auto w-full max-w-md rounded-2xl border border-border bg-surface p-6 text-text backdrop:bg-text/30"
     >
       <h2 className="text-3xl font-semibold tracking-tight">Room settings</h2>
-      <p className="mt-1 text-sm text-muted">
-        Only you (the host) can change these.
-      </p>
-      <form
-        onSubmit={save}
-        className="mt-6 flex flex-col gap-4"
-        key={String(open)}
-      >
+      <p className="mt-1 text-sm text-muted">Only you (the host) can change these.</p>
+      <form onSubmit={save} className="mt-6 flex flex-col gap-4" key={String(open)}>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="room-name">Name</Label>
-          <Input
-            id="room-name"
-            name="name"
-            defaultValue={room.name}
-            required
-            maxLength={60}
-          />
+          <Input id="room-name" name="name" defaultValue={room.name} required maxLength={60} />
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col gap-1.5">

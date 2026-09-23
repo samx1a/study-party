@@ -35,12 +35,22 @@ export function GuestForm() {
 
   return (
     <Card>
-      <h1 className="text-3xl font-semibold tracking-tight">{joiningRoom ? "Join the room" : "What should we call you?"}</h1>
+      <h1 className="text-3xl font-semibold tracking-tight">
+        {joiningRoom ? "Join the room" : "What should we call you?"}
+      </h1>
       <p className="mt-1 text-sm text-muted">No account needed. Your friends will see this name.</p>
       <form onSubmit={onSubmit} className="mt-6 flex flex-col gap-4">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="name">Your name</Label>
-          <Input id="name" name="name" required maxLength={50} autoComplete="given-name" autoFocus placeholder="Ada" />
+          <Input
+            id="name"
+            name="name"
+            required
+            maxLength={50}
+            autoComplete="given-name"
+            autoFocus
+            placeholder="Ada"
+          />
         </div>
         <ErrorText>{error}</ErrorText>
         <Button type="submit" size="lg" disabled={pending} data-testid="guest-continue">

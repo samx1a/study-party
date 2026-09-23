@@ -39,9 +39,7 @@ export function StatsPanel({ stats }: { stats: Stats }) {
         {tiles.slice(1).map((t) => (
           <div key={t.label}>
             <dt className="text-muted">{t.label}</dt>
-            <dd className="mt-0.5 text-xl font-semibold tabular-nums">
-              {t.value}
-            </dd>
+            <dd className="mt-0.5 text-xl font-semibold tabular-nums">{t.value}</dd>
           </div>
         ))}
       </dl>
@@ -58,9 +56,7 @@ export function StatsPanel({ stats }: { stats: Stats }) {
             </span>
             <div
               className={
-                i === 6
-                  ? "w-full max-w-8 rounded-t bg-accent-ink"
-                  : "w-full max-w-8 rounded-t bg-accent"
+                i === 6 ? "w-full max-w-8 rounded-t bg-accent-ink" : "w-full max-w-8 rounded-t bg-accent"
               }
               style={{
                 height: `${Math.max(d.minutes > 0 ? 4 : 1, (d.minutes / max) * 100)}%`,

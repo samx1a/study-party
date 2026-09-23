@@ -22,19 +22,10 @@ export function ConnectionBanner() {
     };
   }, []);
 
-  if (
-    offline ||
-    state === ConnectionState.Reconnecting ||
-    state === ConnectionState.SignalReconnecting
-  ) {
+  if (offline || state === ConnectionState.Reconnecting || state === ConnectionState.SignalReconnecting) {
     return (
-      <div
-        role="status"
-        className="bg-warn/15 px-4 py-2 text-center text-sm text-warn"
-      >
-        {offline
-          ? "You're offline. We'll reconnect when your internet is back…"
-          : "Reconnecting…"}
+      <div role="status" className="bg-warn/15 px-4 py-2 text-center text-sm text-warn">
+        {offline ? "You're offline. We'll reconnect when your internet is back…" : "Reconnecting…"}
       </div>
     );
   }

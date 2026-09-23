@@ -16,10 +16,7 @@ import { useRoomState } from "./use-room-state";
 import { usePhaseChange, useTimer } from "./use-timer";
 import { VideoStage } from "./video-stage";
 
-type RoomEvent =
-  | { type: "room-updated" }
-  | { type: "goals-updated" }
-  | { type: "kicked"; userId: string };
+type RoomEvent = { type: "room-updated" } | { type: "goals-updated" } | { type: "kicked"; userId: string };
 
 export function RoomView(props: {
   initial: RoomState;
@@ -27,10 +24,7 @@ export function RoomView(props: {
   onLeave: () => void;
   onKicked: () => void;
 }) {
-  const { state, setState, refresh, serverNow } = useRoomState(
-    props.initial.room.id,
-    props.initial,
-  );
+  const { state, setState, refresh, serverNow } = useRoomState(props.initial.room.id, props.initial);
   const { room, me } = state;
   const timer = useTimer(room, serverNow);
   const screen = useMyScreen();
@@ -40,8 +34,7 @@ export function RoomView(props: {
 
   usePhaseChange(timer.phase, (next) => {
     if (next !== "idle") playChime(next);
-    if (next !== "idle")
-      document.title = `${next === "focus" ? "Focus" : "Break"} · ${room.name}`;
+    if (next !== "idle") document.title = `${next === "focus" ? "Focus" : "Break"} · ${room.name}`;
   });
 
   // The server nudges us over LiveKit when something changes; we refetch the real state.
@@ -88,11 +81,7 @@ export function RoomView(props: {
 
       <div className="flex min-h-0 flex-1 gap-3 px-3 pb-2">
         <main className="relative min-w-0 flex-1">
-          <VideoStage
-            goals={state.goals}
-            canRemove={me.isHost}
-            onRemove={removeParticipant}
-          />
+          <VideoStage goals={state.goals} canRemove={me.isHost} onRemove={removeParticipant} />
           {screen.paused && <PausedOverlay onShare={screen.share} />}
         </main>
         {sidebarOpen && (

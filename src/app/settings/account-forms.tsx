@@ -29,9 +29,7 @@ export function AccountForms({
       name: String(f.get("name")).trim(),
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     });
-    setMsg(
-      error ? { error: error.message ?? "Couldn't save." } : { ok: "Saved." },
-    );
+    setMsg(error ? { error: error.message ?? "Couldn't save." } : { ok: "Saved." });
     router.refresh();
   }
 
@@ -44,8 +42,7 @@ export function AccountForms({
       newPassword: String(f.get("next")),
       revokeOtherSessions: true,
     });
-    if (error)
-      setPwMsg({ error: error.message ?? "Couldn't change password." });
+    if (error) setPwMsg({ error: error.message ?? "Couldn't change password." });
     else {
       setPwMsg({ ok: "Password changed. Other devices were signed out." });
       form.reset();
@@ -54,12 +51,7 @@ export function AccountForms({
 
   async function deleteAccount(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (
-      !confirm(
-        "Delete your account, rooms you host, and all study history? This can't be undone.",
-      )
-    )
-      return;
+    if (!confirm("Delete your account, rooms you host, and all study history? This can't be undone.")) return;
     const f = new FormData(e.currentTarget);
     const { error } = await authClient.deleteUser({
       password: String(f.get("password")),
@@ -79,13 +71,7 @@ export function AccountForms({
         <form onSubmit={saveProfile} className="mt-4 flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="name">Name</Label>
-            <Input
-              id="name"
-              name="name"
-              defaultValue={name}
-              required
-              maxLength={50}
-            />
+            <Input id="name" name="name" defaultValue={name} required maxLength={50} />
           </div>
           {!guest && (
             <div className="flex flex-col gap-1.5">
@@ -96,8 +82,8 @@ export function AccountForms({
           <div className="flex flex-col gap-1.5">
             <Label>Time zone</Label>
             <p className="text-sm text-muted">
-              {timezone}. Your study days follow this. It updates to this
-              device&apos;s zone when you save or join a room.
+              {timezone}. Your study days follow this. It updates to this device&apos;s zone when you save or
+              join a room.
             </p>
           </div>
           {msg.ok && <p className="text-sm text-break-ink">{msg.ok}</p>}
@@ -112,9 +98,8 @@ export function AccountForms({
         <Card>
           <h2 className="font-semibold">You&apos;re a guest</h2>
           <p className="mt-1 text-sm text-muted">
-            Your rooms, goals, and streak are saved in this browser only. Create
-            a free account to keep them on any device. Everything you&apos;ve
-            done so far comes with you.
+            Your rooms, goals, and streak are saved in this browser only. Create a free account to keep them
+            on any device. Everything you&apos;ve done so far comes with you.
           </p>
           <Link
             href="/sign-up?next=/dashboard"
@@ -127,19 +112,10 @@ export function AccountForms({
         <>
           <Card>
             <h2 className="font-semibold">Password</h2>
-            <form
-              onSubmit={changePassword}
-              className="mt-4 flex flex-col gap-4"
-            >
+            <form onSubmit={changePassword} className="mt-4 flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="current">Current password</Label>
-                <Input
-                  id="current"
-                  name="current"
-                  type="password"
-                  required
-                  autoComplete="current-password"
-                />
+                <Input id="current" name="current" type="password" required autoComplete="current-password" />
               </div>
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="next">New password</Label>
@@ -163,8 +139,7 @@ export function AccountForms({
           <Card className="border-danger/30">
             <h2 className="font-semibold text-danger">Delete account</h2>
             <p className="mt-1 text-sm text-muted">
-              Removes your account, rooms you host, your goals, and your study
-              history.
+              Removes your account, rooms you host, your goals, and your study history.
             </p>
             <form onSubmit={deleteAccount} className="mt-4 flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">

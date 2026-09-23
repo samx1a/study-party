@@ -27,15 +27,12 @@ export function useMyScreen() {
   const [error, setError] = useState<string | null>(null);
   const timer = useRef<ReturnType<typeof setInterval>>(undefined);
 
-  const pub = () =>
-    localParticipant.getTrackPublication(Track.Source.ScreenShare);
+  const pub = () => localParticipant.getTrackPublication(Track.Source.ScreenShare);
 
   const show = useCallback(async () => {
     clearInterval(timer.current);
     setHiddenFor(0);
-    await localParticipant
-      .getTrackPublication(Track.Source.ScreenShare)
-      ?.unmute();
+    await localParticipant.getTrackPublication(Track.Source.ScreenShare)?.unmute();
   }, [localParticipant]);
 
   async function hide() {
@@ -48,9 +45,7 @@ export function useMyScreen() {
       setHiddenFor((s) => {
         if (s <= 1) {
           clearInterval(timer.current);
-          localParticipant
-            .getTrackPublication(Track.Source.ScreenShare)
-            ?.unmute();
+          localParticipant.getTrackPublication(Track.Source.ScreenShare)?.unmute();
           return 0;
         }
         return s - 1;
@@ -85,8 +80,7 @@ export function ControlBar(props: {
   onOpenSettings: () => void;
   onLeave: () => void;
 }) {
-  const { localParticipant, isMicrophoneEnabled, isCameraEnabled } =
-    useLocalParticipant();
+  const { localParticipant, isMicrophoneEnabled, isCameraEnabled } = useLocalParticipant();
   const [micError, setMicError] = useState<string | null>(null);
   const focus = props.phase === "focus";
   const { screen } = props;
@@ -115,16 +109,10 @@ export function ControlBar(props: {
           onClick={toggleMic}
           disabled={focus}
           active={isMicrophoneEnabled}
-          title={
-            focus ? "Mics are off during focus. Chat on the break!" : undefined
-          }
+          title={focus ? "Mics are off during focus. Chat on the break!" : undefined}
           data-testid="mic"
         >
-          {isMicrophoneEnabled ? (
-            <MicIcon className="size-4" />
-          ) : (
-            <MicOffIcon className="size-4" />
-          )}
+          {isMicrophoneEnabled ? <MicIcon className="size-4" /> : <MicOffIcon className="size-4" />}
           {focus ? "Muted for focus" : isMicrophoneEnabled ? "Mute" : "Unmute"}
         </ControlButton>
 
@@ -142,11 +130,7 @@ export function ControlBar(props: {
             <EyeOffIcon className="size-4" /> Hidden {screen.hiddenFor}s · Show
           </ControlButton>
         ) : (
-          <ControlButton
-            onClick={screen.hide}
-            disabled={screen.paused}
-            data-testid="hide-screen"
-          >
+          <ControlButton onClick={screen.hide} disabled={screen.paused} data-testid="hide-screen">
             <EyeOffIcon className="size-4" /> Hide {HIDE_SECONDS}s
           </ControlButton>
         )}
@@ -158,19 +142,11 @@ export function ControlBar(props: {
 
       {/* Right: panels, host settings, and leave. */}
       <div className="flex items-center justify-end gap-2">
-        <ControlButton
-          onClick={props.onToggleSidebar}
-          active={props.sidebarOpen}
-          data-testid="goals-toggle"
-        >
+        <ControlButton onClick={props.onToggleSidebar} active={props.sidebarOpen} data-testid="goals-toggle">
           <ListIcon className="size-4" /> Goals
         </ControlButton>
         {props.isHost && (
-          <ControlButton
-            onClick={props.onOpenSettings}
-            aria-label="Room settings"
-            title="Room settings"
-          >
+          <ControlButton onClick={props.onOpenSettings} aria-label="Room settings" title="Room settings">
             <GearIcon className="size-4" />
           </ControlButton>
         )}
@@ -195,9 +171,7 @@ function ControlButton({
       className={cn(
         "inline-flex h-11 items-center gap-2 rounded-full px-4 text-sm font-medium whitespace-nowrap transition-colors",
         "disabled:cursor-not-allowed disabled:opacity-50",
-        active
-          ? "bg-accent text-accent-ink hover:bg-accent-hover"
-          : "bg-surface-2 text-text hover:bg-border",
+        active ? "bg-accent text-accent-ink hover:bg-accent-hover" : "bg-surface-2 text-text hover:bg-border",
         className,
       )}
       {...props}
@@ -211,19 +185,12 @@ export function PausedOverlay({ onShare }: { onShare: () => void }) {
       className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-bg/95 p-6 text-center backdrop-blur-sm"
       data-testid="paused"
     >
-      <h2 className="text-4xl font-semibold tracking-tight">
-        You&apos;re paused
-      </h2>
+      <h2 className="text-4xl font-semibold tracking-tight">You&apos;re paused</h2>
       <p className="max-w-md text-muted">
-        Your screen share stopped. Share a window to keep studying with the
-        group. Study time doesn&apos;t count while you&apos;re paused.
+        Your screen share stopped. Share a window to keep studying with the group. Study time doesn&apos;t
+        count while you&apos;re paused.
       </p>
-      <Button
-        size="lg"
-        onClick={onShare}
-        className="mt-2"
-        data-testid="reshare"
-      >
+      <Button size="lg" onClick={onShare} className="mt-2" data-testid="reshare">
         <ScreenIcon className="size-5" /> Share a window
       </Button>
     </div>

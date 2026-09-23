@@ -27,7 +27,10 @@ export const PATCH = handler(async (req, ctx: RouteContext<"/api/rooms/[id]">) =
     (changes.breakMinutes !== undefined && changes.breakMinutes !== r.breakMinutes);
   const timer = lengthsChanged && r.timerStartedAt ? { timerStartedAt: new Date() } : {};
 
-  await db.update(room).set({ ...changes, ...timer }).where(eq(room.id, id));
+  await db
+    .update(room)
+    .set({ ...changes, ...timer })
+    .where(eq(room.id, id));
   await broadcast(id, { type: "room-updated" });
   return NextResponse.json({ ok: true });
 });

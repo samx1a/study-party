@@ -65,10 +65,7 @@ export function GoalsPanel({ roomId, meId, goals, onChange, refresh }: Props) {
   }
 
   // Everyone else who's here now, plus anyone who left goals earlier this session.
-  const others = new Map<
-    string,
-    { name: string; goals: RoomGoal[]; here: boolean }
-  >();
+  const others = new Map<string, { name: string; goals: RoomGoal[]; here: boolean }>();
   for (const p of participants) {
     if (p.identity !== meId)
       others.set(p.identity, {
@@ -95,9 +92,7 @@ export function GoalsPanel({ roomId, meId, goals, onChange, refresh }: Props) {
     >
       <section>
         <h2 className="text-sm font-semibold">Your goals</h2>
-        <p className="mt-0.5 text-xs text-muted">
-          What will you finish this session?
-        </p>
+        <p className="mt-0.5 text-xs text-muted">What will you finish this session?</p>
         <form onSubmit={add} className="mt-3">
           <Input
             value={text}
@@ -111,30 +106,18 @@ export function GoalsPanel({ roomId, meId, goals, onChange, refresh }: Props) {
         {error && <p className="mt-2 text-xs text-danger">{error}</p>}
         <ul className="mt-3 flex flex-col gap-1">
           {mine.map((g) => (
-            <li
-              key={g.id}
-              className="group flex items-start gap-2 rounded-md px-1 py-1 hover:bg-surface-2"
-            >
+            <li key={g.id} className="group flex items-start gap-2 rounded-md px-1 py-1 hover:bg-surface-2">
               <button
                 onClick={() => toggle(g)}
                 aria-label={g.done ? "Mark not done" : "Mark done"}
                 className={cn(
                   "mt-0.5 grid size-4 shrink-0 place-items-center rounded border",
-                  g.done
-                    ? "border-break-ink bg-break text-break-ink"
-                    : "border-muted",
+                  g.done ? "border-break-ink bg-break text-break-ink" : "border-muted",
                 )}
               >
                 {g.done && <CheckIcon className="size-3" />}
               </button>
-              <span
-                className={cn(
-                  "flex-1 text-sm",
-                  g.done && "text-muted line-through",
-                )}
-              >
-                {g.text}
-              </span>
+              <span className={cn("flex-1 text-sm", g.done && "text-muted line-through")}>{g.text}</span>
               <button
                 onClick={() => remove(g)}
                 aria-label="Delete goal"
@@ -150,24 +133,15 @@ export function GoalsPanel({ roomId, meId, goals, onChange, refresh }: Props) {
       <section>
         <h2 className="text-sm font-semibold">Everyone</h2>
         {others.size === 0 && (
-          <p className="mt-1 text-xs text-muted">
-            Invite friends with the link at the top.
-          </p>
+          <p className="mt-1 text-xs text-muted">Invite friends with the link at the top.</p>
         )}
         <ul className="mt-3 flex flex-col gap-4">
           {[...others.entries()].map(([id, o]) => (
             <li key={id}>
               <p className="flex items-center gap-2 text-sm font-medium">
-                <span
-                  className={cn(
-                    "size-1.5 rounded-full",
-                    o.here ? "bg-break" : "bg-muted",
-                  )}
-                />
+                <span className={cn("size-1.5 rounded-full", o.here ? "bg-break" : "bg-muted")} />
                 {o.name}
-                {!o.here && (
-                  <span className="text-xs font-normal text-muted">left</span>
-                )}
+                {!o.here && <span className="text-xs font-normal text-muted">left</span>}
               </p>
               {o.goals.length === 0 ? (
                 <p className="mt-1 pl-3.5 text-xs text-muted">No goals yet</p>
@@ -176,10 +150,7 @@ export function GoalsPanel({ roomId, meId, goals, onChange, refresh }: Props) {
                   {o.goals.map((g) => (
                     <li
                       key={g.id}
-                      className={cn(
-                        "text-sm",
-                        g.done ? "text-muted line-through" : "text-text",
-                      )}
+                      className={cn("text-sm", g.done ? "text-muted line-through" : "text-text")}
                     >
                       {g.done ? "✓ " : "○ "}
                       {g.text}

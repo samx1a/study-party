@@ -78,7 +78,10 @@ test("two friends run a full study session", async ({ browser }) => {
   // Host removes the guest, who can't come back.
   host.once("dialog", (d) => d.accept());
   await host.locator('[data-testid="tile"][data-name="Gabe"]').hover();
-  await host.locator('[data-testid="tile"][data-name="Gabe"]').getByRole("button", { name: "Remove" }).click();
+  await host
+    .locator('[data-testid="tile"][data-name="Gabe"]')
+    .getByRole("button", { name: "Remove" })
+    .click();
   await expect(guest.getByText("You were removed")).toBeVisible();
   await guest.goto(roomPath);
   await expect(guest.getByText("You can't join this room")).toBeVisible();

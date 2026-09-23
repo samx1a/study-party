@@ -8,7 +8,10 @@ export const metadata: Metadata = { title: "Join" };
 
 export default async function JoinPage(props: PageProps<"/join">) {
   const { next } = await props.searchParams;
-  if (await getSession()) redirect(typeof next === "string" && next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard");
+  if (await getSession())
+    redirect(
+      typeof next === "string" && next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard",
+    );
   return (
     <Suspense>
       <GuestForm />

@@ -11,7 +11,13 @@ export function SignOutButton({ guest }: { guest: boolean }) {
       variant="ghost"
       size="sm"
       onClick={async () => {
-        if (guest && !confirm("You're a guest, so signing out loses your rooms and streak. Create an account first to keep them. Sign out anyway?")) return;
+        if (
+          guest &&
+          !confirm(
+            "You're a guest, so signing out loses your rooms and streak. Create an account first to keep them. Sign out anyway?",
+          )
+        )
+          return;
         await authClient.signOut();
         router.replace("/");
         router.refresh();

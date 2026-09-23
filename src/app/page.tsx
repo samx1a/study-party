@@ -67,7 +67,9 @@ export default async function Home() {
         </section>
 
         <section id="how" className="mx-auto max-w-4xl scroll-mt-8 px-4 py-20">
-          <h2 className="text-center text-4xl font-semibold tracking-tight md:text-5xl">Three steps. Zero setup.</h2>
+          <h2 className="text-center text-4xl font-semibold tracking-tight md:text-5xl">
+            Three steps. Zero setup.
+          </h2>
           <ol className="mt-12 grid gap-6 md:grid-cols-3">
             {STEPS.map((s, i) => (
               <li key={s.title} className="rounded-2xl border border-border bg-surface p-6">
@@ -81,23 +83,25 @@ export default async function Home() {
 
         <section className="mx-auto max-w-4xl px-4 pb-24">
           <div className="rounded-3xl border border-border bg-surface p-8 md:p-12">
-            <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">Built with your privacy in mind</h2>
+            <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
+              Built with your privacy in mind
+            </h2>
             <ul className="mt-6 grid gap-4 text-sm text-muted md:grid-cols-2">
               <li>
-                <strong className="text-text">Nothing is recorded.</strong> Video goes straight to the people in
-                your room and is never stored.
+                <strong className="text-text">Nothing is recorded.</strong> Video goes straight to the people
+                in your room and is never stored.
               </li>
               <li>
-                <strong className="text-text">Share one window.</strong> Pick your notes or IDE, not your whole
-                screen, so texts and tabs stay private.
+                <strong className="text-text">Share one window.</strong> Pick your notes or IDE, not your
+                whole screen, so texts and tabs stay private.
               </li>
               <li>
                 <strong className="text-text">Hide in one click.</strong> Need to check something? Hide your
                 screen for 30 seconds.
               </li>
               <li>
-                <strong className="text-text">Invite-only rooms.</strong> Only people with your link can join, and
-                the host can remove anyone.
+                <strong className="text-text">Invite-only rooms.</strong> Only people with your link can join,
+                and the host can remove anyone.
               </li>
             </ul>
             <Link href="/privacy" className="mt-6 inline-block text-sm text-accent-ink hover:underline">
@@ -133,7 +137,10 @@ const FEATURES = [
 
 const STEPS = [
   { title: "Create a room", body: "Name it after your class or study group. It takes five seconds." },
-  { title: "Send the link", body: "Friends type their name and join. No account needed. Works in Chrome, Edge, Firefox, or Safari on a computer." },
+  {
+    title: "Send the link",
+    body: "Friends type their name and join. No account needed. Works in Chrome, Edge, Firefox, or Safari on a computer.",
+  },
   { title: "Start focus", body: "Share a window, set your goals, hit start. The timer does the rest." },
 ];
 
@@ -165,21 +172,32 @@ function RoomMock() {
       </div>
       <div className="grid grid-cols-2 gap-3 p-3">
         {people.map((p) => (
-          <div key={p.name} className="relative aspect-video overflow-hidden rounded-lg border border-border bg-surface-2">
+          <div
+            key={p.name}
+            className="relative aspect-video overflow-hidden rounded-lg border border-border bg-surface-2"
+          >
             {p.kind === "paused" ? (
-              <div className="flex size-full items-center justify-center text-xs text-warn">⏸ Paused, not sharing</div>
+              <div className="flex size-full items-center justify-center text-xs text-warn">
+                ⏸ Paused, not sharing
+              </div>
             ) : (
               <div className={p.kind === "code" ? "space-y-2 p-4 font-mono" : "space-y-2 p-4"}>
                 {p.lines.map((w, i) => (
                   <div
                     key={i}
-                    className={p.kind === "code" && i % 2 ? "ml-4 h-2 rounded-full bg-break" : "h-2 rounded-full bg-border"}
+                    className={
+                      p.kind === "code" && i % 2
+                        ? "ml-4 h-2 rounded-full bg-break"
+                        : "h-2 rounded-full bg-border"
+                    }
                     style={{ width: `${w}%` }}
                   />
                 ))}
               </div>
             )}
-            <span className="absolute bottom-2 left-2 rounded bg-surface px-1.5 py-0.5 text-[10px]">{p.name}</span>
+            <span className="absolute bottom-2 left-2 rounded bg-surface px-1.5 py-0.5 text-[10px]">
+              {p.name}
+            </span>
             <span className="absolute right-2 bottom-2 grid size-9 place-items-center rounded-full border-2 border-surface bg-accent text-[10px] font-semibold text-muted md:size-12">
               {p.name[0]}
             </span>

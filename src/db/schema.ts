@@ -1,13 +1,4 @@
-import {
-  bigint,
-  boolean,
-  index,
-  integer,
-  pgTable,
-  primaryKey,
-  text,
-  timestamp,
-} from "drizzle-orm/pg-core";
+import { bigint, boolean, index, integer, pgTable, primaryKey, text, timestamp } from "drizzle-orm/pg-core";
 
 // ---------------------------------------------------------------------------
 // Better Auth tables. Field names must match what Better Auth expects.

@@ -1,7 +1,15 @@
 import { Logo } from "@/components/ui";
 import { SiteFooter } from "@/components/site-footer";
 
-export function ProsePage({ title, updated, children }: { title: string; updated: string; children: React.ReactNode }) {
+export function ProsePage({
+  title,
+  updated,
+  children,
+}: {
+  title: string;
+  updated: string;
+  children: React.ReactNode;
+}) {
   return (
     <>
       <header className="mx-auto flex h-16 w-full max-w-3xl items-center px-4">

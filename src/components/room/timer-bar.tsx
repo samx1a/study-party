@@ -9,11 +9,7 @@ const LABEL = { focus: "Focus", break: "Break", idle: "Timer off" } as const;
 
 export function TimerDisplay({ timer }: { timer: TimerState }) {
   return (
-    <div
-      className="flex items-center gap-3"
-      data-testid="timer"
-      data-phase={timer.phase}
-    >
+    <div className="flex items-center gap-3" data-testid="timer" data-phase={timer.phase}>
       <span
         className={cn(
           "rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide",
@@ -26,10 +22,7 @@ export function TimerDisplay({ timer }: { timer: TimerState }) {
         {timer.phase !== "idle" && ` · ${timer.round}`}
       </span>
       {timer.phase !== "idle" && (
-        <span
-          className="font-mono text-2xl font-semibold tabular-nums"
-          aria-live="off"
-        >
+        <span className="font-mono text-2xl font-semibold tabular-nums" aria-live="off">
           {formatClock(timer.remainingMs)}
         </span>
       )}
@@ -64,33 +57,17 @@ export function TimerControls({
 
   if (timer.phase === "idle") {
     return (
-      <Button
-        size="sm"
-        onClick={() => send("start")}
-        disabled={busy}
-        data-testid="timer-start"
-      >
+      <Button size="sm" onClick={() => send("start")} disabled={busy} data-testid="timer-start">
         Start focus
       </Button>
     );
   }
   return (
     <div className="flex gap-1">
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => send("skip")}
-        disabled={busy}
-        data-testid="timer-skip"
-      >
+      <Button variant="ghost" size="sm" onClick={() => send("skip")} disabled={busy} data-testid="timer-skip">
         Skip to {timer.phase === "focus" ? "break" : "focus"}
       </Button>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => send("stop")}
-        disabled={busy}
-      >
+      <Button variant="ghost" size="sm" onClick={() => send("stop")} disabled={busy}>
         Stop
       </Button>
     </div>

@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  useIsMuted,
-  useIsSpeaking,
-  VideoTrack,
-  type TrackReference,
-} from "@livekit/components-react";
+import { useIsMuted, useIsSpeaking, VideoTrack, type TrackReference } from "@livekit/components-react";
 import { type Participant, Track } from "livekit-client";
 import { EyeOffIcon, MicIcon, MicOffIcon, PauseIcon } from "@/components/icons";
 import { cn } from "@/lib/cn";
@@ -51,12 +46,7 @@ export function ParticipantTile({
     >
       <ScreenArea screen={screen} small={small} />
 
-      <CameraBubble
-        camera={camera}
-        name={name}
-        small={small}
-        mirror={participant.isLocal}
-      />
+      <CameraBubble camera={camera} name={name} small={small} mirror={participant.isLocal} />
 
       <div className="absolute bottom-2 left-2 flex max-w-[70%] items-center gap-1.5 rounded-md bg-black/60 px-2 py-1 text-xs text-white backdrop-blur">
         {micMuted ? (
@@ -79,12 +69,7 @@ export function ParticipantTile({
         <button
           onClick={(e) => {
             e.stopPropagation();
-            if (
-              confirm(
-                `Remove ${name} from this room? They won't be able to rejoin.`,
-              )
-            )
-              onRemove();
+            if (confirm(`Remove ${name} from this room? They won't be able to rejoin.`)) onRemove();
           }}
           className="absolute top-2 right-2 rounded-md bg-black/60 px-2 py-1 text-xs text-danger opacity-0 backdrop-blur transition-opacity group-hover:opacity-100 focus:opacity-100"
         >
@@ -95,21 +80,11 @@ export function ParticipantTile({
   );
 }
 
-function ScreenArea({
-  screen,
-  small,
-}: {
-  screen?: TrackReference;
-  small: boolean;
-}) {
+function ScreenArea({ screen, small }: { screen?: TrackReference; small: boolean }) {
   // Hooks can't be conditional, so muted-ness is read inside a child that only renders with a track.
   if (!screen) {
     return (
-      <Placeholder
-        small={small}
-        tone="warn"
-        icon={<PauseIcon className="size-5" />}
-      >
+      <Placeholder small={small} tone="warn" icon={<PauseIcon className="size-5" />}>
         Paused, not sharing
       </Placeholder>
     );
@@ -117,31 +92,16 @@ function ScreenArea({
   return <LiveScreen screen={screen} small={small} />;
 }
 
-function LiveScreen({
-  screen,
-  small,
-}: {
-  screen: TrackReference;
-  small: boolean;
-}) {
+function LiveScreen({ screen, small }: { screen: TrackReference; small: boolean }) {
   const hidden = useIsMuted(screen);
   if (hidden) {
     return (
-      <Placeholder
-        small={small}
-        tone="muted"
-        icon={<EyeOffIcon className="size-5" />}
-      >
+      <Placeholder small={small} tone="muted" icon={<EyeOffIcon className="size-5" />}>
         Screen hidden for a moment
       </Placeholder>
     );
   }
-  return (
-    <VideoTrack
-      trackRef={screen}
-      className="size-full bg-black object-contain"
-    />
-  );
+  return <VideoTrack trackRef={screen} className="size-full bg-black object-contain" />;
 }
 
 function Placeholder(props: {
@@ -189,22 +149,13 @@ function CameraBubble({
   );
 }
 
-function CameraVideo({
-  camera,
-  mirror,
-}: {
-  camera: TrackReference;
-  mirror: boolean;
-}) {
+function CameraVideo({ camera, mirror }: { camera: TrackReference; mirror: boolean }) {
   const off = useIsMuted(camera);
   if (off) return null;
   return (
     <VideoTrack
       trackRef={camera}
-      className={cn(
-        "absolute inset-0 size-full object-cover",
-        mirror && "-scale-x-100",
-      )}
+      className={cn("absolute inset-0 size-full object-cover", mirror && "-scale-x-100")}
     />
   );
 }

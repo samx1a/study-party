@@ -50,7 +50,9 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
 
   return (
     <Card>
-      <h1 className="text-3xl font-semibold tracking-tight">{isSignUp ? "Create your account" : "Welcome back"}</h1>
+      <h1 className="text-3xl font-semibold tracking-tight">
+        {isSignUp ? "Create your account" : "Welcome back"}
+      </h1>
       <p className="mt-1 text-sm text-muted">
         {isSignUp ? "Free. Takes 20 seconds." : "Sign in to join your study room."}
       </p>
@@ -59,12 +61,26 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
         {isSignUp && (
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="name">Name</Label>
-            <Input id="name" name="name" required maxLength={50} autoComplete="name" placeholder="Ada Lovelace" />
+            <Input
+              id="name"
+              name="name"
+              required
+              maxLength={50}
+              autoComplete="name"
+              placeholder="Ada Lovelace"
+            />
           </div>
         )}
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" name="email" type="email" required autoComplete="email" placeholder="you@school.edu" />
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            required
+            autoComplete="email"
+            placeholder="you@school.edu"
+          />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="password">Password</Label>

@@ -20,7 +20,10 @@ export const POST = handler(async (req, ctx: RouteContext<"/api/rooms/[id]/goals
   const { text } = await parseBody(req, body);
 
   const since = new Date(Date.now() - GOAL_WINDOW_HOURS * 3600_000);
-  const mine = await db.$count(goal, and(eq(goal.roomId, id), eq(goal.userId, me.id), gt(goal.createdAt, since)));
+  const mine = await db.$count(
+    goal,
+    and(eq(goal.roomId, id), eq(goal.userId, me.id), gt(goal.createdAt, since)),
+  );
   if (mine >= GOALS_PER_PERSON) throw new HttpError(400, `Up to ${GOALS_PER_PERSON} goals per session.`);
 
   const [row] = await db
