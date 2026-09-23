@@ -3,14 +3,16 @@ import Link from "next/link";
 import { AppHeader } from "@/components/app-header";
 import { Card } from "@/components/ui";
 import { listMyRooms } from "@/lib/rooms";
+import { getStats } from "@/lib/stats";
 import { requireUser } from "@/lib/session";
 import { CreateRoomForm } from "./create-room-form";
+import { StatsPanel } from "./stats-panel";
 
 export const metadata: Metadata = { title: "Dashboard" };
 
 export default async function DashboardPage() {
   const me = await requireUser("/dashboard");
-  const rooms = await listMyRooms(me.id);
+  const [rooms, stats] = await Promise.all([listMyRooms(me.id), getStats(me.id, me.timezone ?? "UTC")]);
 
   return (
     <>
@@ -19,7 +21,11 @@ export default async function DashboardPage() {
         <h1 className="font-display text-4xl">Hey {me.name.split(" ")[0]}.</h1>
         <p className="mt-1 text-muted">Pick a room, or start a new one and send the link to friends.</p>
 
-        <section className="mt-10 grid gap-6 md:grid-cols-[1fr_1.4fr]">
+        <div className="mt-8">
+          <StatsPanel stats={stats} />
+        </div>
+
+        <section className="mt-6 grid gap-6 md:grid-cols-[1fr_1.4fr]">
           <Card>
             <h2 className="font-semibold">New room</h2>
             <p className="mt-1 mb-4 text-sm text-muted">Anyone with the link can join after signing in.</p>
