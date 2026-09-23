@@ -2,7 +2,7 @@
 
 import type { LocalTrack, LocalVideoTrack } from "livekit-client";
 import { TrackEvent } from "livekit-client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Button, ButtonLink, ErrorText } from "@/components/ui";
 import { canShareScreen, createCameraTrack, createScreenTrack, describeMediaError } from "@/lib/media";
 import { cn } from "@/lib/cn";
@@ -40,13 +40,10 @@ export function Prejoin({ roomName, joining, error, onJoin }: Props) {
   const [screen, setScreen] = useState<LocalTrack | null>(null);
   const [camError, setCamError] = useState<string | null>(null);
   const [screenError, setScreenError] = useState<string | null>(null);
-  const [supported, setSupported] = useState(true);
+  // Server render assumes support; the browser answers for real after hydration.
+  const supported = useSyncExternalStore(noop, canShareScreen, () => true);
   const handedOff = useRef(false);
   const tracksRef = useRef<{ camera: LocalTrack | null; screen: LocalTrack | null }>({ camera: null, screen: null });
-
-  useEffect(() => {
-    setSupported(canShareScreen());
-  }, []);
 
   useEffect(() => {
     tracksRef.current = { camera, screen };
@@ -164,6 +161,8 @@ export function Prejoin({ roomName, joining, error, onJoin }: Props) {
     </Shell>
   );
 }
+
+const noop = () => () => {};
 
 function Shell({ roomName, children }: { roomName: string; children: React.ReactNode }) {
   return (

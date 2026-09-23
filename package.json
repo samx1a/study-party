@@ -14,7 +14,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "e2e": "playwright test",
-    "test:db:setup": "DATABASE_URL=postgres://localhost:5432/study_party_test drizzle-kit migrate"
+    "test:db:setup": "DATABASE_URL=postgres://localhost:5432/study_party_test drizzle-kit migrate",
+    "check": "npm run lint && npm run typecheck && npm test"
   },
   "dependencies": {
     "@livekit/components-react": "^2.9.24",
