@@ -7,6 +7,7 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 const display = Instrument_Serif({ variable: "--font-display", subsets: ["latin"], weight: "400" });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.BETTER_AUTH_URL ?? "http://localhost:3100"),
   title: { default: "Study Party", template: "%s · Study Party" },
   description:
     "Study with friends, camera and screen on. A shared focus timer, goals, and streaks keep everyone honest.",
