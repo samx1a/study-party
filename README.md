@@ -13,6 +13,7 @@ mics lock during focus time. Your study time turns into hours and streaks.
 - 🙈 **Privacy**: hide your screen for 30s in one click. Nothing is recorded.
 - 🔥 **Streaks & hours**: minutes only count while your screen is really being shared (checked on the server).
 - 🔒 **Invite-only rooms**: the link is the invite, and the host can remove people.
+- 👋 **No sign-up**: friends type a name and they're in. Accounts are optional, for keeping your streak across devices.
 
 ## Tech stack
 
@@ -21,7 +22,7 @@ mics lock during focus time. Your study time turns into hours and streaks.
 | App + API | Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4 |
 | Video | LiveKit (open-source video server; LiveKit Cloud in production) |
 | Database | Postgres + Drizzle ORM |
-| Login | Better Auth (email + password) |
+| Login | Better Auth: guest (name only) by default, optional email + password account |
 | Tests | Vitest (unit + database), Playwright (two real browsers with fake cameras) |
 
 How it all fits together, and why, is in **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**.
@@ -49,8 +50,8 @@ npm run livekit
 npm run dev
 ```
 
-Open http://localhost:3100, create an account, and make a room. To test with
-a "friend", open the room link in a private window and sign up as someone else.
+Open http://localhost:3100, type a name, and make a room. To test with a
+"friend", open the room link in a private window and type another name.
 
 ## Scripts
 

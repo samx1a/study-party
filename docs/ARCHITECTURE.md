@@ -180,8 +180,8 @@ had a chance to study. Pure function in `src/lib/streak.ts`, unit tested.
 
 - Room IDs are random 10-character IDs (nanoid, about 59 bits). The link *is*
   the invite, and it can't realistically be guessed.
-- You need an account to join. The first time you open a room link, you
-  become a **member**.
+- You just need a name (guest) or an account to join. The first time you open
+  a room link, you become a **member**.
 - The **host** (creator) can change timer lengths, rename the room, and
   **remove** someone. Removing kicks them from LiveKit and bans them from
   getting a new token for that room.
@@ -198,7 +198,19 @@ had a chance to study. Pure function in `src/lib/streak.ts`, unit tested.
 
 ### 3.10 Auth
 
-**Better Auth** with email + password, stored in our own Postgres.
+**No sign-up needed.** Visitors type a name and get a **guest account**
+(Better Auth's "anonymous" plugin). That's a normal user row with no email or
+password, plus a session cookie. Rooms, goals, hosting, and streaks all work
+exactly the same for guests.
+
+- A guest's progress lives in their browser's cookie. If they clear cookies,
+  it's gone.
+- Guests can **save their progress** by creating an account (email +
+  password). The guest's rooms, memberships, goals, and study days are merged
+  into the new account (`src/lib/merge-guest.ts`), then the guest row is deleted.
+- Creating guests is rate-limited per IP in production (5/min).
+
+Accounts use **Better Auth** with email + password, stored in our own Postgres.
 
 - Why not roll our own: password hashing, session rotation, and CSRF are
   easy to get wrong.
