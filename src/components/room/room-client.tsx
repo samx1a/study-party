@@ -99,7 +99,11 @@ export function RoomClient({ initial, userName }: { initial: RoomState; userName
             await stage.room.disconnect();
             setStage({ name: "ended", title: "You left the room", body: "Nice work. See you next session.", canRejoin: true });
           }}
-          onKicked={() => stage.room.disconnect()}
+          onKicked={async () => {
+            // We disconnect ourselves here (client-initiated), so set the end screen directly.
+            await stage.room.disconnect();
+            setStage({ name: "ended", title: "You were removed", body: "The host removed you from this room.", canRejoin: false });
+          }}
         />
       </RoomContext.Provider>
     );
