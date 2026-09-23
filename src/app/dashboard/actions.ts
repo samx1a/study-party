@@ -17,7 +17,7 @@ export async function createRoomAction(
   form: FormData,
 ): Promise<{ error?: string }> {
   const session = await getSession();
-  if (!session) redirect("/sign-in?next=/dashboard");
+  if (!session) redirect("/join?next=/dashboard");
 
   const parsed = nameSchema.safeParse(form.get("name"));
   if (!parsed.success) return { error: parsed.error.issues[0].message };

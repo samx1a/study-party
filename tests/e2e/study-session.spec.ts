@@ -14,6 +14,18 @@ async function newUser(browser: Browser, name: string, next = "/dashboard") {
   return page;
 }
 
+// The default path: no account, just a name.
+async function newGuest(browser: Browser, name: string, next = "/dashboard") {
+  const ctx = await browser.newContext();
+  const page = await ctx.newPage();
+  await page.goto(next);
+  await expect(page).toHaveURL(/\/join\?next=/);
+  await page.fill("#name", name);
+  await page.getByTestId("guest-continue").click();
+  await page.waitForURL(`**${next}`);
+  return page;
+}
+
 async function joinWithCameraAndScreen(page: Page) {
   await expect(page.getByTestId("join")).toBeDisabled();
   await page.getByTestId("start-camera").click();
@@ -23,7 +35,7 @@ async function joinWithCameraAndScreen(page: Page) {
 }
 
 test("two friends run a full study session", async ({ browser }) => {
-  // Host signs up and creates a room.
+  // Host has an account and creates a room.
   const host = await newUser(browser, "Hana");
   await host.getByLabel("Room name").fill("E2E study hall");
   await host.getByRole("button", { name: "Create room" }).click();
@@ -31,8 +43,8 @@ test("two friends run a full study session", async ({ browser }) => {
   const roomPath = new URL(host.url()).pathname;
   await joinWithCameraAndScreen(host);
 
-  // Guest opens the invite link, signs up, and lands back in the room.
-  const guest = await newUser(browser, "Gabe", roomPath);
+  // Friend opens the invite link, types just a name, and lands in the room.
+  const guest = await newGuest(browser, "Gabe", roomPath);
   await joinWithCameraAndScreen(guest);
 
   await expect(host.getByTestId("tile")).toHaveCount(2);
@@ -70,7 +82,27 @@ test("two friends run a full study session", async ({ browser }) => {
   await expect(guest.getByText("You can't join this room")).toBeVisible();
 });
 
-test("signed-out visitors are sent to sign in and back", async ({ page }) => {
+test("signed-out visitors are asked for a name, then sent back", async ({ page }) => {
   await page.goto("/r/doesnotexist");
-  await expect(page).toHaveURL(/\/sign-in\?next=%2Fr%2Fdoesnotexist/);
+  await expect(page).toHaveURL(/\/join\?next=%2Fr%2Fdoesnotexist/);
+});
+
+test("a guest can save their progress by creating an account", async ({ browser }) => {
+  const page = await newGuest(browser, "Gia");
+  await expect(page.getByText("You're studying as a guest")).toBeVisible();
+  await page.getByLabel("Room name").fill("Guest room");
+  await page.getByRole("button", { name: "Create room" }).click();
+  await page.waitForURL("**/r/*");
+
+  await page.goto("/sign-up?next=/dashboard");
+  await page.fill("#name", "Gia");
+  await page.fill("#email", `gia-${run}@e2e.test`);
+  await page.fill("#password", "password123");
+  await page.getByRole("button", { name: "Create account" }).click();
+  await page.waitForURL("**/dashboard");
+
+  // Same room, now owned by the real account; guest banner gone.
+  await expect(page.getByText("Guest room")).toBeVisible();
+  await expect(page.getByText("You're the host")).toBeVisible();
+  await expect(page.getByText("You're studying as a guest")).toBeHidden();
 });

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AppHeader } from "@/components/app-header";
-import { Card } from "@/components/ui";
+import { ButtonLink, Card } from "@/components/ui";
 import { listMyRooms } from "@/lib/rooms";
 import { getStats } from "@/lib/stats";
 import { requireUser } from "@/lib/session";
@@ -16,10 +16,24 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <AppHeader name={me.name} />
+      <AppHeader name={me.name} guest={!!me.isAnonymous} />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-10">
         <h1 className="font-display text-4xl">Hey {me.name.split(" ")[0]}.</h1>
         <p className="mt-1 text-muted">Pick a room, or start a new one and send the link to friends.</p>
+
+        {me.isAnonymous && (
+          <div className="mt-6 flex flex-col items-start justify-between gap-3 rounded-2xl border border-accent/30 bg-accent/10 p-4 text-sm md:flex-row md:items-center">
+            <p>
+              <strong>You&apos;re studying as a guest.</strong>{" "}
+              <span className="text-muted">
+                Your rooms and streak live in this browser. Create a free account to keep them on any device.
+              </span>
+            </p>
+            <ButtonLink href="/sign-up?next=/dashboard" size="sm">
+              Save my progress
+            </ButtonLink>
+          </div>
+        )}
 
         <div className="mt-8">
           <StatsPanel stats={stats} />
@@ -28,7 +42,7 @@ export default async function DashboardPage() {
         <section className="mt-6 grid gap-6 md:grid-cols-[1fr_1.4fr]">
           <Card>
             <h2 className="font-semibold">New room</h2>
-            <p className="mt-1 mb-4 text-sm text-muted">Anyone with the link can join after signing in.</p>
+            <p className="mt-1 mb-4 text-sm text-muted">Anyone with the link can join. They just type their name.</p>
             <CreateRoomForm />
           </Card>
 

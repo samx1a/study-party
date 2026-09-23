@@ -7,7 +7,8 @@ import { getSession } from "@/lib/session";
 export const metadata: Metadata = { title: "Sign up" };
 
 export default async function Page() {
-  if (await getSession()) redirect("/dashboard");
+  const session = await getSession();
+  if (session && !session.user.isAnonymous) redirect("/dashboard");
   return (
     <Suspense>
       <AuthForm mode="sign-up" />

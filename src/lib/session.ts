@@ -9,9 +9,9 @@ export const getSession = cache(async () => {
   return auth.api.getSession({ headers: await headers() });
 });
 
-// For pages: send signed-out visitors to sign in, then back here.
+// For pages: send signed-out visitors to enter a name (or sign in), then back here.
 export async function requireUser(returnTo: string) {
   const session = await getSession();
-  if (!session) redirect(`/sign-in?next=${encodeURIComponent(returnTo)}`);
+  if (!session) redirect(`/join?next=${encodeURIComponent(returnTo)}`);
   return session.user;
 }

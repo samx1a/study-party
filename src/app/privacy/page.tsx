@@ -26,7 +26,8 @@ export default function PrivacyPage() {
 
       <h2>What we store</h2>
       <ul>
-        <li>Your account: name, email, a securely hashed password, and your time zone.</li>
+        <li>Your name and time zone. You can use Study Party as a guest with just a name.</li>
+        <li>If you create an account: your email and a securely hashed password.</li>
         <li>Rooms you create or join, and the goals you write in them.</li>
         <li>How many minutes you studied each day, to show your hours and streaks.</li>
         <li>Sign-in sessions (a cookie), including the IP address and browser used to sign in.</li>

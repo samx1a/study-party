@@ -4,7 +4,8 @@ import { SiteFooter } from "@/components/site-footer";
 import { getSession } from "@/lib/session";
 
 export default async function Home() {
-  const signedIn = !!(await getSession());
+  const session = await getSession();
+  const signedIn = !!session && !session.user.isAnonymous;
 
   return (
     <>
@@ -20,8 +21,8 @@ export default async function Home() {
               <ButtonLink href="/sign-in" variant="ghost" size="sm">
                 Sign in
               </ButtonLink>
-              <ButtonLink href="/sign-up" size="sm">
-                Get started
+              <ButtonLink href="/dashboard" size="sm">
+                Start studying
               </ButtonLink>
             </>
           )}
@@ -31,7 +32,7 @@ export default async function Home() {
       <main className="flex-1">
         <section className="mx-auto max-w-6xl px-4 pt-16 pb-20 text-center md:pt-24">
           <p className="mx-auto w-fit rounded-full border border-border px-3 py-1 text-xs text-muted">
-            Free for study groups · No downloads
+            Free · No sign-up · No downloads
           </p>
           <h1 className="mx-auto mt-6 max-w-3xl font-display text-5xl leading-[1.05] md:text-7xl">
             Study together.
@@ -43,7 +44,7 @@ export default async function Home() {
             group quiet, then lets you talk on breaks. No more &quot;studying&quot; on TikTok.
           </p>
           <div className="mt-8 flex justify-center gap-3">
-            <ButtonLink href={signedIn ? "/dashboard" : "/sign-up"} size="lg">
+            <ButtonLink href="/dashboard" size="lg">
               Start a study room
             </ButtonLink>
             <ButtonLink href="#how" variant="secondary" size="lg">
@@ -137,7 +138,7 @@ const FEATURES = [
 
 const STEPS = [
   { title: "Create a room", body: "Name it after your class or study group. It takes five seconds." },
-  { title: "Send the link", body: "Friends sign up and join from Chrome, Edge, Firefox, or Safari on a computer." },
+  { title: "Send the link", body: "Friends type their name and join. No account needed. Works in Chrome, Edge, Firefox, or Safari on a computer." },
   { title: "Start focus", body: "Share a window, set your goals, hit start. The timer does the rest." },
 ];
 
