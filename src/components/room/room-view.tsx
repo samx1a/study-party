@@ -6,6 +6,7 @@ import { GearIcon, LeaveIcon, LinkIcon } from "@/components/icons";
 import { Button } from "@/components/ui";
 import type { RoomState } from "@/lib/room-types";
 import { playChime } from "@/lib/chime";
+import { ConnectionBanner } from "./connection-banner";
 import { GoalsPanel } from "./goals-panel";
 import { SettingsDialog } from "./settings-dialog";
 import { ControlBar, PausedOverlay, useMyScreen } from "./controls";
@@ -84,6 +85,7 @@ export function RoomView(props: {
         </div>
       </header>
       <TimerProgress timer={timer} />
+      <ConnectionBanner />
 
       <div className="flex min-h-0 flex-1">
         <main className="relative min-w-0 flex-1 p-3">
